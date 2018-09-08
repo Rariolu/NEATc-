@@ -1,0 +1,4 @@
+xcopy /Y "$(OutDir)*.dll" "F:\fff\Imported VS Projects\Projects\NEATc++\Demo\bin\Debug"
+xcopy /Y "$(OutDir)*.dll" "F:\fff\Imported VS Projects\Projects\NEATc++\Demo\bin\Release"
+xcopy /Y "$(OutDir)*.dll" "F:\fff\Imported VS Projects\Projects\NEATc++\Sudokise\bin\Debug"
+xcopy /Y "$(OutDir)*.dll" "F:\fff\Imported VS Projects\Projects\NEATc++\Sudokise\bin\Release"
