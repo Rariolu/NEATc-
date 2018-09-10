@@ -64,6 +64,12 @@ void Node::AddInput(Node* othernode)
 	Link* link = new Link(othernode, this,rand);
 	AddInput(link);
 	othernode->AddOutput(link);
+	if (_clone && othernode->GetClone())
+	{
+		Link* link = new Link(othernode->GetClone(), _clone);
+		_clone->AddInput(link);
+		othernode->GetClone()->AddOutput(link);
+	}
 }
 
 void Node::AddInput(Link* link)
@@ -92,6 +98,12 @@ void Node::AddOutput(Node* othernode)
 	Link* link = new Link(this, othernode,rand);
 	AddOutput(link);
 	othernode->AddInput(link);
+	if (_clone && othernode->GetClone())
+	{
+		Link* link = new Link(_clone, othernode->GetClone());
+		_clone->AddOutput(link);
+		othernode->GetClone()->AddInput(link);
+	}
 }
 
 void Node::ResetMemory()
@@ -144,6 +156,14 @@ void Node::RemoveInput(Link* link)
 	}
 }
 
+void Node::RemoveInput(int index)
+{
+	if (index < _inputs.size() && index >= 0)
+	{
+		RemoveInput(_inputs[index]);
+	}
+}
+
 void Node::RemoveOutput(Link* link)
 {
 	//TODO: GetOutputIterator being annoying, putting its functionality here for now.
@@ -151,6 +171,14 @@ void Node::RemoveOutput(Link* link)
 	if (i != _outputs.end())
 	{
 		_outputs.erase(i);
+	}
+}
+
+void Node::RemoveOutput(int index)
+{
+	if (index < _outputs.size() && index >= 0)
+	{
+		RemoveOutput(_outputs[index]);
 	}
 }
 
@@ -164,6 +192,8 @@ void Node::RemoveFromGenome()
 	{
 		(*i)->GetDestination()->RemoveInput((*i));
 	}
+	_clone->RemoveFromGenome();
+	_clone->~Node();
 }
 
 void Node::MutateWeight()
@@ -180,6 +210,10 @@ void Node::MutateWeight()
 			{
 				//int inputindex = rand->Next(_inputs.size());
 				_inputs[inputindex+offset]->MutateWeight();
+				if (_clone)
+				{
+					_clone->GetInputs()[inputIndex + offset]->SetWeight(_inputs[inputIndex + offset]->GetWeight());
+				}
 			}
 		}
 		else
@@ -222,6 +256,10 @@ vector<Node::Link*> Node::GetOutputs()
 void Node::SetDistance(double d)
 {
 	distancefromstart = d;
+	if (_clone)
+	{
+		_clone->SetDistance(d);
+	}
 }
 
 bool Node::IsInput()
@@ -253,20 +291,39 @@ void Node::RemoveWeakInputs()
 {
 	if (_inputs.size() > 0)
 	{
-		vector<Link*> inputstoberemoved;
-		for (vector<Link*>::iterator i = _inputs.begin(); i < _inputs.end(); i++)
+		//vector<Link*> inputstoberemoved;
+		vector<int> inputstoberemoved;
+		for (int i = 0; i < _inputs.size(); i++)
 		{
-			if ((*i)->GetWeight() < minweight)
+			if (_inputs[i]->GetWeight() < minweight)
 			{
-				inputstoberemoved.push_back((*i));
-				//i = _inputs.erase(i);
+				inputstoberemoved.push_back(i);
 			}
 		}
-		for (vector<Link*>::iterator i = inputstoberemoved.begin(); i < inputstoberemoved.end(); i++)
+		//for (vector<Link*>::iterator i = _inputs.begin(); i < _inputs.end(); i++)
+		//{
+		//	if ((*i)->GetWeight() < minweight)
+		//	{
+		//		inputstoberemoved.push_back((*i));
+		//		//i = _inputs.erase(i);
+		//	}
+		//}
+		if (inputstoberemoved.size() > 0)
 		{
-			RemoveInput((*i));
-			//cout << "Input removed mwuhahaha" << endl;
+			for (vector<int>::iterator i = inputstoberemoved.begin(); i < inputstoberemoved.end(); i++)
+			{
+				RemoveInput((*i));
+				if (_clone)
+				{
+					_clone->RemoveInput((*i));
+				}
+				//cout << "Input removed mwuhahaha" << endl;
+			}
 		}
+	}
+	if (_clone)
+	{
+		_clone->RemoveWeakInputs();
 	}
 }
 
@@ -274,13 +331,24 @@ void Node::ImproveStrongInputs()
 {
 	if (_inputs.size() > 0)
 	{
-		for (vector<Link*>::iterator i = _inputs.begin(); i < _inputs.end(); i++)
+		for (int i = 0; i < _inputs.size(); i++)
 		{
-			if ((*i)->GetWeight() >= strongweight)
+			if (_inputs[i]->GetWeight() >= strongweight)
 			{
-				(*i)->SetWeight(1);
+				_inputs[i]->SetWeight(1);
 			}
 		}
+		if (_clone)
+		{
+			_clone->ImproveStrongInputs();
+		}
+		//for (vector<Link*>::iterator i = _inputs.begin(); i < _inputs.end(); i++)
+		//{
+		//	if ((*i)->GetWeight() >= strongweight)
+		//	{
+		//		(*i)->SetWeight(1);
+		//	}
+		//}
 	}
 }
 
@@ -314,4 +382,14 @@ bool Node::HasInput(int nodeid)
 		}
 	}
 	return false;
+}
+
+Node* Node::GetClone()
+{
+	return _clone;
+}
+
+void Node::CreateClone()
+{
+	_clone = new Node(rand, nodeid);
 }

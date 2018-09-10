@@ -17,6 +17,7 @@ class Genome
 		Genome(int inputcount, int outputcount);
 		Genome(int inputcount, int outputcount, int randseed);
 		Genome(int inputcount, int outputcount, int memorycount, int randseed);
+		Genome(int inputcount, int outputcount, int stmcount, int ltmcount, int randseed);
 		~Genome();
 		double GetOutput(vector<double> inputs, int outputnum);
 		void ResetMemory();
@@ -25,7 +26,8 @@ class Genome
 		int GetInputCount();
 		int GetOutputCount();
 
-		int GetMemoryCount();
+		int GetLTMemoryCount();
+		int GetSTMemoryCount();
 
 		void SetNodes(vector<Node*> allnodes, vector<InputNode*> inputnodes, vector<OutputNode*> outputnodes, vector<Node*> intermediatenodes, vector<InputMemoryNode*> inputmemorynodes, vector<OutputMemoryNode*> outputmemorynodes, MemoryPresentNode* memorypresentnode);
 		vector<InputNode*> GetInputNodes();
@@ -44,6 +46,7 @@ class Genome
 		static Genome* Merge(Genome* a, Genome* b, int mergeid);
 		static Genome* GetGenomeWithCommonProperties(Genome* a, Genome* b, int mergeid);
 		void Train(vector<double> inputs, vector<double> outputs);
+		map<int, Node*> GetNodeMap();
 	private:
 		int _id;
 		vector<Node*> _nodes;
@@ -55,6 +58,11 @@ class Genome
 		vector<InputMemoryNode*> _inputmemorynodes;
 		MemoryPresentNode* _memorypresentnode;
 
+		vector<OutputMemoryNode*> _stoutputmemorynodes;
+		vector<InputMemoryNode*> _stinputmemorynodes;
+
+		
+
 		CSRand* rand;
 		double WeightMutation = 0.8;
 		double LinkMutation = 0.15;
@@ -65,7 +73,8 @@ class Genome
 		int InputCount;
 		int OutputCount;
 
-		int MemoryCount;
+		int STMemoryCount;
+		int LTMemoryCount;
 
 		double MetaMutate(double value);
 		void AddNode(Node* prevnode, Node* nextnode);

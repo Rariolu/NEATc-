@@ -85,7 +85,9 @@ class Node
 			virtual double GetNodeValue(vector<double> inputs);
 			void ResetMemory();
 			void RemoveInput(Link* link);
+			void RemoveInput(int index);
 			void RemoveOutput(Link* link);
+			void RemoveOutput(int index);
 			void RemoveFromGenome();
 			void RandomiseDistance(double min, double max);
 			double GetDistance();
@@ -106,6 +108,9 @@ class Node
 			static int GetNodeNum();
 			static void CheckNodeNum(int value);
 			bool HasInput(int nodeid);
+
+			Node* GetClone();
+			void CreateClone();
 		protected:
 			bool isInput = false;
 			bool isOutput = false;
@@ -126,6 +131,7 @@ class Node
 			int nodeid;
 			double minweight = 0.0001;
 			double strongweight = 0.998;
+			Node* _clone;
 };
 
 #endif

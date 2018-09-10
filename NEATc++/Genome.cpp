@@ -25,7 +25,12 @@ Genome::Genome(int inputcount, int outputcount, int randseed) : Genome(inputcoun
 	//OutputCount = outputcount;
 }
 
-Genome::Genome(int inputcount, int outputcount, int memorycount, int randseed)
+Genome::Genome(int inputcount, int outputcount, int memorycount, int randseed) : Genome(inputcount,outputcount,memorycount,memorycount,randseed)
+{
+
+}
+
+Genome::Genome(int inputcount, int outputcount, int stmcount, int ltmcount, int randseed)
 {
 	_id = randseed;
 	rand = new CSRand();
@@ -45,7 +50,7 @@ Genome::Genome(int inputcount, int outputcount, int memorycount, int randseed)
 	_memorypresentnode = new MemoryPresentNode();
 	_nodes.push_back(_memorypresentnode);
 
-	for (int i = 0; i < memorycount; i++)
+	for (int i = 0; i < /*memorycount*/stmcount; i++)
 	{
 		OutputMemoryNode* outputmemorynode = new OutputMemoryNode(rand);
 		_outputmemorynodes.push_back(outputmemorynode);
@@ -54,12 +59,13 @@ Genome::Genome(int inputcount, int outputcount, int memorycount, int randseed)
 		_nodes.push_back(outputmemorynode);
 		_nodes.push_back(inputmemorynode);
 	}
-	
+
 
 
 	InputCount = inputcount;
 	OutputCount = outputcount;
-	MemoryCount = memorycount;
+	STMemoryCount = stmcount;
+	LTMemoryCount = ltmcount;
 }
 
 int Genome::ID()
@@ -111,7 +117,7 @@ Genome* Genome::Clone(int genomeid)
 		nodedict.insert(make_pair(intnode->GetNodeID(), intnode));
 		//ConsoleManager::Output("IntermediateNode: " + to_string(intnode->GetNodeID()) + " added.");
 	}
-	if (MemoryCount > 0)
+	if (STMemoryCount > 0)
 	{
 		for (vector<InputMemoryNode*>::iterator inpmemnode = inputmemorynodes.begin(); inpmemnode < inputmemorynodes.end(); inpmemnode++)
 		{
@@ -187,7 +193,7 @@ Genome* Genome::Clone(int genomeid)
 		}
 		
 	}
-	Genome* newgenome = new Genome(InputCount, OutputCount,MemoryCount, genomeid);
+	Genome* newgenome = new Genome(InputCount, OutputCount,STMemoryCount,LTMemoryCount, genomeid);
 	newgenome->SetNodes(allnodes, inputs, outputs, intermediates,inputmemorynodes,outputmemorynodes,memorypresentnode);
 	newgenome->SetRand(newRAND);
 	return newgenome;
@@ -446,14 +452,19 @@ int Genome::GetOutputCount()
 	return OutputCount;
 }
 
-int Genome::GetMemoryCount()
+int Genome::GetLTMemoryCount()
 {
-	return MemoryCount;
+	return LTMemoryCount;
+}
+
+int Genome::GetSTMemoryCount()
+{
+	return STMemoryCount;
 }
 
 Genome* Genome::Merge(Genome* a, Genome* b,int mergeid)
 {
-	if (a->GetInputCount() != b->GetInputCount() || a->GetOutputCount() != b->GetOutputCount() || a->GetMemoryCount() != b->GetMemoryCount())
+	if (a->GetInputCount() != b->GetInputCount() || a->GetOutputCount() != b->GetOutputCount() || a->GetLTMemoryCount() != b->GetLTMemoryCount() || a->GetSTMemoryCount() != b->GetSTMemoryCount())
 	{
 		return NULL;
 	}
@@ -525,7 +536,7 @@ Genome* Genome::Merge(Genome* a, Genome* b,int mergeid)
 		allnodes.push_back(out);
 		nodedict.insert(make_pair(outid, out));
 	}
-	for (int i = 0; i < a->GetMemoryCount(); i++)
+	for (int i = 0; i < a->GetSTMemoryCount(); i++)
 	{
 		int inpmemid = _aInputMemoryNodes[i]->GetNodeID();
 		int outmemid = _aInputMemoryNodes[i]->GetOutputMemoryNode()->GetNodeID();
@@ -596,26 +607,14 @@ Genome* Genome::Merge(Genome* a, Genome* b,int mergeid)
 
 Genome* Genome::GetGenomeWithCommonProperties(Genome* a, Genome* b, int mergeid)
 {
-	if (a->GetInputCount() != b->GetInputCount() || a->GetOutputCount() != b->GetOutputCount() || a->GetMemoryCount() != b->GetMemoryCount())
+	if (a->GetInputCount() != b->GetInputCount() || a->GetOutputCount() != b->GetOutputCount() || a->GetSTMemoryCount() != b->GetSTMemoryCount() || a->GetLTMemoryCount() != b->GetLTMemoryCount())
 	{
 		return NULL;
 	}
-	map<int, Node*> aNodes;
-	map<int, Node*> bNodes;
+	map<int, Node*> aNodes = a->GetNodeMap();
+	map<int, Node*> bNodes = b->GetNodeMap();
 	vector<Node*> commonNodes;
-	vector<Node*> a_nodes = a->GetNodes();
-	vector<Node*> b_nodes = b->GetNodes();
 	CSRand* newRAND = new CSRand(mergeid);
-	for (vector<Node*>::iterator i = a_nodes.begin(); i < a_nodes.end(); i++)
-	{
-		int nodeid = (*i)->GetNodeID();
-		aNodes.insert(make_pair(nodeid, (*i)));
-	}
-	for (vector<Node*>::iterator i = b_nodes.begin(); i < b_nodes.end(); i++)
-	{
-		int nodeid = (*i)->GetNodeID();
-		bNodes.insert(make_pair(nodeid, (*i)));
-	}
 	vector<int> aDeletionIndexes;
 	for (map<int, Node*>::iterator aNode = aNodes.begin(); aNode != aNodes.end(); aNode++)
 	{
@@ -779,4 +778,17 @@ Genome* Genome::GetGenomeWithCommonProperties(Genome* a, Genome* b, int mergeid)
 void Genome::Train(vector<double> inputs, vector<double> outputs)
 {
 	
+}
+
+map<int, Node*> Genome::GetNodeMap()
+{
+	map<int, Node*> _map;
+	if (_nodes.size() > 0)
+	{
+		for (vector<Node*>::iterator n = _nodes.begin(); n < _nodes.end(); n++)
+		{
+			_map.insert(make_pair((*n)->GetNodeID(), (*n)));
+		}
+	}
+	return _map;
 }

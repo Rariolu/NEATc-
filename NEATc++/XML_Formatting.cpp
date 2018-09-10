@@ -28,13 +28,16 @@ string XML_Formatting::ConvertGenomeToXML(Genome* genome)
 	int inputcount = genome->GetInputCount();
 	int outputcount = genome->GetOutputCount();
 
-	int memorycount = genome->GetMemoryCount();
+	int ltmemorycount = genome->GetLTMemoryCount();
+	int stmemorycount = genome->GetSTMemoryCount();
 
 	content += "\t<InputCount>" + to_string(inputcount) + "</InputCount>\n";
 
 	content += "\t<OutputCount>" + to_string(outputcount) + "</OutputCount>\n";
 
-	content += "\t<MemoryCount>" + to_string(memorycount) + "</MemoryCount>\n";
+	content += "\t<STMemoryCount>" + to_string(stmemorycount) + "</STMemoryCount>\n";
+
+	content += "\t<LTMemoryCount>" + to_string(ltmemorycount) + "</LTMemoryCount>\n";
 
 	content += "\t<MemoryPresentNode>"+to_string(genome->GetMemoryPresentNode()->GetNodeID())+"</MemoryPresentNode>\n";
 
@@ -211,8 +214,10 @@ Genome* XML_Formatting::ParseGenomeDirect(string content)
 	bool outset = false;
 	int outputcount;
 
-	bool memset = false;
-	int memorycount = 0;
+	bool stmemset = false;
+	bool ltmemset = false;
+	int stmemorycount = 0;
+	int ltmemorycount = 0;
 
 	bool memorypresentset = false;
 	int memorypresentnodeid;
@@ -268,16 +273,26 @@ Genome* XML_Formatting::ParseGenomeDirect(string content)
 						n->~IntWrapper();
 					}
 
-					if (Operations::Contains(line, "<MemoryCount>"))
+					if (Operations::Contains(line, "<STMemoryCount>"))
 					{
-						string memcount = Operations::GetTextBetween(line, "<MemoryCount>", "</MemoryCount>");
+						string memcount = Operations::GetTextBetween(line, "<STMemoryCount>", "</STMemoryCount>");
 						IntWrapper* n = new IntWrapper();
 						if (Operations::TryParse(memcount,n))
 						{
-							memorycount = n->Number;
-							memset = true;
+							stmemorycount = n->Number;
+							stmemset = true;
 						}
 						n->~IntWrapper();
+					}
+					if (Operations::Contains(line, "<LTMemoryCount>"))
+					{
+						string ltmemcount = Operations::GetTextBetween(line, "<LTMemoryCount>", "</LTMemoryCount>");
+						IntWrapper* n = new IntWrapper();
+						if (Operations::TryParse(ltmemcount,n))
+						{
+							ltmemorycount = n->Number;
+							ltmemset = true;
+						}
 					}
 					if (Operations::Contains(line, "<MemoryPresentNode>"))
 					{
@@ -440,7 +455,7 @@ Genome* XML_Formatting::ParseGenomeDirect(string content)
 					cout << "What the actual fuck? " << endl;
 				}
 			}
-			genome = new Genome(inputcount, outputcount,memorycount, id);
+			genome = new Genome(inputcount, outputcount,stmemorycount,ltmemorycount, id);
 			genome->SetNodes(allnodes, inputs, outputs, intermediates, inputmemorynodes, outputmemorynodes,memorypresentnode);
 			genome->SetRand(rand);
 			//GenomeManager::InsertGenome(id, genome);
