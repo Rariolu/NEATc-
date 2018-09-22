@@ -6,11 +6,13 @@ class MemoryPresentNode : public Node
 {
 	public:
 		MemoryPresentNode();
-		MemoryPresentNode(int nodeid);
+		MemoryPresentNode(int nodeid, bool _stmnodespresent);
 		~MemoryPresentNode();
+		bool STMNodesPresent();
 		double GetNodeValue(vector<double> inputs);
 	private:
 		bool firstiteration = true;
+		bool stmnodespresent = true;
 };
 
 #endif

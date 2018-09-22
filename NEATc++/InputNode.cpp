@@ -32,3 +32,11 @@ int InputNode::GetInputIndex()
 {
 	return inputIndex;
 }
+
+void InputNode::CreateClone()
+{
+	if (!_clone)
+	{
+		_clone = new InputNode(inputIndex, rand, GetNodeID());
+	}
+}

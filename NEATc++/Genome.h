@@ -61,7 +61,7 @@ class Genome
 		vector<OutputMemoryNode*> _stoutputmemorynodes;
 		vector<InputMemoryNode*> _stinputmemorynodes;
 
-		
+		vector<Node::Link*>* links;
 
 		CSRand* rand;
 		double WeightMutation = 0.8;

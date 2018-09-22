@@ -76,6 +76,10 @@ void Node::AddInput(Link* link)
 {
 	//cout << "Node::AddInput called" << endl;
 	_inputs.push_back(link);
+	if (links)
+	{
+		links->push_back(link);
+	}
 }
 
 void Node::AddOutput(Link* link)
@@ -391,5 +395,31 @@ Node* Node::GetClone()
 
 void Node::CreateClone()
 {
-	_clone = new Node(rand, nodeid);
+	if (!_clone)
+	{
+		_clone = new Node(rand, nodeid);
+		_clone->SetDistance(distancefromstart);
+	}
+	//if (_inputs.size() > 0)
+	//{
+	//	for (vector<Link*>::iterator input = _inputs.begin(); input < _inputs.end(); input++)
+	//	{
+	//		Link* inputclone;
+	//		if (inputclone = (*input)->GetClone())
+	//		{
+	//			_clone->AddInput(inputclone);
+	//		}
+	//	}
+	//}
+	//if (_outputs.size() > 0)
+	//{
+	//	for (vector<Link*>::iterator output = _outputs.begin(); output < _outputs.end(); output++)
+	//	{
+	//		Link* outputclone;
+	//		if (outputclone = (*output)->GetClone())
+	//		{
+	//			_clone->AddOutput(outputclone);
+	//		}
+	//	}
+	//}
 }

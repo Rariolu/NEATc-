@@ -68,6 +68,14 @@ class Node
 				{
 					weight = val;
 				}
+				Link* GetClone()
+				{
+					if (_source->GetClone() && _destination->GetClone())
+					{
+						return new Link(_source->GetClone(), _destination->GetClone(), rand, weight);
+					}
+					return NULL;
+				}
 			private:
 				Node * _source;
 				Node* _destination;
@@ -110,7 +118,7 @@ class Node
 			bool HasInput(int nodeid);
 
 			Node* GetClone();
-			void CreateClone();
+			virtual void CreateClone();
 		protected:
 			bool isInput = false;
 			bool isOutput = false;
@@ -121,6 +129,8 @@ class Node
 			double distancefromstart;
 			CSRand* rand;
 			static int nodenum;
+
+			Node* _clone;
 		private:
 			vector<Link*> _inputs;
 			vector<Link*> _outputs;
@@ -131,7 +141,9 @@ class Node
 			int nodeid;
 			double minweight = 0.0001;
 			double strongweight = 0.998;
-			Node* _clone;
+			
+
+			vector<Link*>* links;
 };
 
 #endif

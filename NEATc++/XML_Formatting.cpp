@@ -395,7 +395,7 @@ Genome* XML_Formatting::ParseGenomeDirect(string content)
 			vector<InputMemoryNode*> inputmemorynodes;
 			vector<OutputMemoryNode*> outputmemorynodes;
 
-			MemoryPresentNode* memorypresentnode = new MemoryPresentNode(memorypresentnodeid);
+			MemoryPresentNode* memorypresentnode = new MemoryPresentNode(memorypresentnodeid,stmemorycount > 0 && ltmemorycount > 0);
 
 			map<int, Node*> nodedict;
 			

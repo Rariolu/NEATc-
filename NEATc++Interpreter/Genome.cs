@@ -181,7 +181,12 @@ namespace NEATc__Interpreter
             {
                 return false;
             }
-            if (XML_Formatting.CPP_Parse(filepath,out int _id, out int _inputcount, out int _outputcount, out int memorycount, out string n_ame))
+            int _id;
+            int _inputcount;
+            int _outputcount;
+            int memorycount;
+            string n_ame;
+            if (XML_Formatting.CPP_Parse(filepath,out _id, out _inputcount, out _outputcount, out memorycount, out n_ame))
             {
                 genome = new Genome(_inputcount, _outputcount,memorycount, _id,false);
                 if (!String.IsNullOrEmpty(n_ame))

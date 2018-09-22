@@ -99,7 +99,8 @@ namespace Demo
         private void button9_Click(object sender, EventArgs e)
         {
             Interface.SetConsoleActivation(false);
-            if (Genome.CreateNewGenome(3, 2, out Genome urgh))
+            Genome urgh;
+            if (Genome.CreateNewGenome(3, 2, out urgh))
             {
                 double[] o1 = urgh.GetOutput(new double[] { 1, 2, 1 });
                 MSGFormat("urgh: [0]: {0}; [1]: {1};", o1[0], o1[1]);
@@ -151,12 +152,14 @@ namespace Demo
         {
             string file = "cppxml.xml";
             bool parse = Interface.ParseGenome(file);
-            Genome.ParseGenome(file, out Genome g);
+            Genome g;
+            Genome.ParseGenome(file, out g);
             MSGFormat("{0} : {1}", file, parse ? "parse succeeded" : "parse failed");
         }
         private void button10_Click(object sender, EventArgs e)
         {
-            if (Genome.CreateGenomeFromID(3,2,5,out Genome g))
+            Genome g;
+            if (Genome.CreateGenomeFromID(3,2,5,out g))
             {
                 double[] output = g.GetOutput(new double[] { 1, 2, 1 });
                 MSGFormat("[0]: {0}; [1]: {1}", output[0], output[1]);
@@ -169,7 +172,8 @@ namespace Demo
         private void button15_Click(object sender, EventArgs e)
         {
             string file = "cppxml.xml";
-            if (Genome.ParseGenome(file,out Genome genome))
+            Genome genome;
+            if (Genome.ParseGenome(file,out genome))
             {
                 genome.Mutate(100);
                 double[] output = genome.GetOutput(new double[] { 1, 2, 1 });

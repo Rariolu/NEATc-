@@ -31,11 +31,15 @@ namespace Sudokise
                 Color.Blue,
                 Color.Green
             };
-            if (SudokuLoad.ParseSudoku(sudokufile, out WholeGird g))
+            WholeGird g;
+            if (SudokuLoad.ParseSudoku(sudokufile, out g))
             {
                 gird = g;
             }
-            if (Genome.ParseGenome(genomefile, out Genome ge) && (SudokuLoad.LoadScore(scorefile,out int id, out int score)))
+            Genome ge;
+            int id;
+            int score;
+            if (Genome.ParseGenome(genomefile, out ge) && (SudokuLoad.LoadScore(scorefile,out id, out score)))
             //if (XML_Formatting.ParseGenome(genomefile, out Genome ge) && (SudokuLoad.LoadScore(scorefile, out int id, out int score)))
             {
                 if (ge.ID == id)
@@ -81,7 +85,8 @@ namespace Sudokise
         double[] oginput;
         private void button1_Click(object sender, EventArgs e)
         {
-            if (Genome.CreateNewGenome(81, 81, out Genome genome))
+            Genome genome;
+            if (Genome.CreateNewGenome(81, 81, out genome))
             {
                 if (!oginputassigned)
                 {
@@ -515,7 +520,8 @@ namespace Sudokise
         }
         bool IsInt(string text)
         {
-            if (int.TryParse(text, out int temp))
+            int temp;
+            if (int.TryParse(text, out temp))
             {
                 return temp > -1 && temp < 10;
             }

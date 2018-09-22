@@ -111,4 +111,7 @@
   <ItemGroup>
     <Text Include="cmd.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Nodes.cd" />
+  </ItemGroup>
 </Project>

@@ -33,7 +33,8 @@ namespace Sudokise2
         public MainForm()
         {
             InitializeComponent();
-            if (SudokuLoad.ParseSudoku(sudokufile, out WholeGrid grid))
+            WholeGrid grid;
+            if (SudokuLoad.ParseSudoku(sudokufile, out grid))
             {
                 currentpuzzle = grid;
                 ogInput = currentpuzzle.NormaliseCurrentValues();
@@ -43,8 +44,11 @@ namespace Sudokise2
             {
                 MessageBox.Show("Puzzle not parsed.");
             }
-            bool g = Genome.ParseGenome(genomefile, out Genome ge);
-            bool s = SudokuLoad.LoadScore(scorefile, out int id, out double score);
+            Genome ge;
+            bool g = Genome.ParseGenome(genomefile, out ge);
+            int id;
+            double score;
+            bool s = SudokuLoad.LoadScore(scorefile, out id, out score);
             if (g && s)
             {
                 if (ge.ID == id)
@@ -138,7 +142,8 @@ namespace Sudokise2
             {
                 if (!genomeassigned)
                 {
-                    if (Genome.CreateNewGenome(81, 81, out Genome g))
+                    Genome g;
+                    if (Genome.CreateNewGenome(81, 81, out g))
                     {
                         maxgenome = g;
                         maxscore = -10000;
@@ -236,7 +241,8 @@ namespace Sudokise2
             }
 
             double[] output = clone.GetOutput(ogInput);
-            double errorcount = currentpuzzle.CheckDenormalisedValues(output, out string t);
+            string t;
+            double errorcount = currentpuzzle.CheckDenormalisedValues(output, out t);
             //System.IO.File.WriteAllText("blep.txt", t);
             double newscore = -errorcount;
             string message = String.Format("{0}| Name: {1}; Score: {2}; {3}", i, clone.Name, newscore, commoned);
