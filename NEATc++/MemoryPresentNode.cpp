@@ -29,3 +29,16 @@ bool MemoryPresentNode::STMNodesPresent()
 {
 	return stmnodespresent;
 }
+
+void MemoryPresentNode::CreateClone()
+{
+	if (!_clone)
+	{
+		_clone = new MemoryPresentNode(GetNodeID(), STMNodesPresent());
+	}
+}
+
+MemoryPresentNode* MemoryPresentNode::GetMPClone()
+{
+	return (MemoryPresentNode*)_clone;
+}

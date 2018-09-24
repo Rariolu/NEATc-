@@ -31,3 +31,16 @@ double OutputMemoryNode::GetPreviousIterationOutput()
 {
 	return previousIterationOutput;
 }
+
+void OutputMemoryNode::CreateClone()
+{
+	if (!_clone)
+	{
+		_clone = new OutputMemoryNode(rand, GetNodeID());
+	}
+}
+
+OutputMemoryNode* OutputMemoryNode::GetOMNClone()
+{
+	return (OutputMemoryNode*)_clone;
+}

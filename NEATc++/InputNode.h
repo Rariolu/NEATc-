@@ -12,6 +12,7 @@ class InputNode : public Node
 		~InputNode();
 		int GetInputIndex();
 		void CreateClone();
+		InputNode* GetINClone();
 	private:
 		void Init(int index, CSRand* _rand);
 };

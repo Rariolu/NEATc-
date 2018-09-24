@@ -10,6 +10,8 @@ class OutputNode : public Node
 		OutputNode(CSRand* _rand);
 		OutputNode(CSRand* _rand, int nodeid);
 		~OutputNode();
+		void CreateClone();
+		OutputNode* GetONClone();
 };
 
 #endif

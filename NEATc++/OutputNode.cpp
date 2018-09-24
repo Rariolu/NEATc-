@@ -22,3 +22,16 @@ OutputNode::~OutputNode()
 {
 
 }
+
+void OutputNode::CreateClone()
+{
+	if (!_clone)
+	{
+		_clone = new OutputNode(rand, GetNodeID());
+	}
+}
+
+OutputNode* OutputNode::GetONClone()
+{
+	return (OutputNode*)_clone;
+}

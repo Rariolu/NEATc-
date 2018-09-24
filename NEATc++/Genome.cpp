@@ -53,14 +53,22 @@ Genome::Genome(int inputcount, int outputcount, int stmcount, int ltmcount, int 
 	for (int i = 0; i < /*memorycount*/stmcount; i++)
 	{
 		OutputMemoryNode* outputmemorynode = new OutputMemoryNode(rand);
-		_outputmemorynodes.push_back(outputmemorynode);
+		_stoutputmemorynodes.push_back(outputmemorynode);
 		InputMemoryNode* inputmemorynode = new InputMemoryNode(outputmemorynode);
-		_inputmemorynodes.push_back(inputmemorynode);
+		_stinputmemorynodes.push_back(inputmemorynode);
 		_nodes.push_back(outputmemorynode);
 		_nodes.push_back(inputmemorynode);
 	}
 
-
+	for (int i = 0; i < ltmcount; i++)
+	{
+		OutputMemoryNode* omn = new OutputMemoryNode(rand);
+		_ltoutputmemorynodes.push_back(omn);
+		InputMemoryNode* imn = new InputMemoryNode(omn);
+		_ltinputmemorynodes.push_back(imn);
+		_nodes.push_back(omn);
+		_nodes.push_back(imn);
+	}
 
 	InputCount = inputcount;
 	OutputCount = outputcount;
@@ -211,8 +219,21 @@ Genome* Genome::Clone(int genomeid)
 	vector<InputNode*> cloneinputnodes;
 	for (int i = 0; i < _inputnodes.size(); i++)
 	{
-		cloneinputnodes.push_back((InputNode*)_inputnodes[i]->GetClone());
+		cloneinputnodes.push_back(_inputnodes[i]->GetINClone());
 	}
+	
+
+	vector<Node::Link*>* linkclones = new vector<Node::Link*>();
+	for (int i = 0; i < links->size(); i++)
+	{
+		linkclones->push_back(links->at(i)->GetClone());
+	}
+
+	Genome* _clone = new Genome(GetInputCount(), GetOutputCount(), GetSTMemoryCount(), GetLTMemoryCount(), genomeid);
+	
+	_clone->SetLinks(linkclones);
+
+	return _clone;
 }
 
 vector<InputNode*> Genome::GetInputNodes()
@@ -230,14 +251,24 @@ vector<OutputNode*> Genome::GetOutputNodes()
 	return _outputnodes;
 }
 
-vector<InputMemoryNode*> Genome::GetInputMemoryNodes()
+vector<InputMemoryNode*> Genome::GetLTInputMemoryNodes()
 {
-	return _inputmemorynodes;
+	return _ltinputmemorynodes;
 }
 
-vector<OutputMemoryNode*> Genome::GetOutputMemoryNodes()
+vector<OutputMemoryNode*> Genome::GetLTOutputMemoryNodes()
 {
-	return _outputmemorynodes;
+	return _ltoutputmemorynodes;
+}
+
+vector<InputMemoryNode*> Genome::GetSTInputMemoryNodes()
+{
+	return _stinputmemorynodes;
+}
+
+vector<OutputMemoryNode*> Genome::GetSTOutputMemoryNodes()
+{
+	return _stoutputmemorynodes;
 }
 
 MemoryPresentNode* Genome::GetMemoryPresentNode()
@@ -250,22 +281,23 @@ vector<Node*> Genome::GetNodes()
 	return _nodes;
 }
 
-void Genome::SetNodes(vector<Node*> allnodes, vector<InputNode*> inputnodes, vector<OutputNode*> outputnodes, vector<Node*> intermediatenodes, vector<InputMemoryNode*> inputmemorynodes, vector<OutputMemoryNode*> outputmemorynodes, MemoryPresentNode* memorypresentnode)
+void Genome::SetNodes(vector<Node*> allnodes, vector<InputNode*> inputnodes, vector<OutputNode*> outputnodes, vector<Node*> intermediatenodes, vector<InputMemoryNode*> ltinputmemorynodes, vector<OutputMemoryNode*> ltoutputmemorynodes,vector<InputMemoryNode*> stinputmemorynodes, vector<OutputMemoryNode*> stoutputmemorynodes, MemoryPresentNode* memorypresentnode)
 {
 	_nodes = allnodes;
 	_inputnodes = inputnodes;
 	_outputnodes = outputnodes;
 	_intermediatenodes = intermediatenodes;
-	_inputmemorynodes = inputmemorynodes;
-	_outputmemorynodes = outputmemorynodes;
+	_ltinputmemorynodes = ltinputmemorynodes;
+	_ltoutputmemorynodes = ltoutputmemorynodes;
+	_stinputmemorynodes = stinputmemorynodes;
+	_stoutputmemorynodes = stoutputmemorynodes;
 	_memorypresentnode = memorypresentnode;
-	//if (_nodes.size() > 0)
-	//{
-	//	for (vector<Node*>::iterator node = _nodes.begin(); node < _nodes.end(); node++)
-	//	{
-	//		(*node)->CreateClone();
-	//	}
-	//}
+}
+
+void Genome::SetLinks(vector<Node::Link*>* _links)
+{
+	links->~vector();
+	links = _links;
 }
 
 void Genome::SetRand(CSRand* _rand)
@@ -497,8 +529,11 @@ Genome* Genome::Merge(Genome* a, Genome* b,int mergeid)
 	vector<Node*> allnodes;
 	vector<Node*> intermediates;
 
-	vector<InputMemoryNode*> inputmemorynodes;
-	vector<OutputMemoryNode*> outputmemorynodes;
+	vector<InputMemoryNode*> ltinputmemorynodes;
+	vector<OutputMemoryNode*> ltoutputmemorynodes;
+
+	vector<InputMemoryNode*> stinputmemorynodes;
+	vector<OutputMemoryNode*> stoutputmemorynodes;
 
 	map<int, Node*> nodedict;
 
@@ -517,7 +552,10 @@ Genome* Genome::Merge(Genome* a, Genome* b,int mergeid)
 	vector<Node*> _aAllnodes = a->GetNodes();
 	vector<Node*> _bAllnodes = b->GetNodes();
 
-	vector<InputMemoryNode*> _aInputMemoryNodes = a->GetInputMemoryNodes();
+	vector<InputMemoryNode*> _aLTInputMemoryNodes = a->GetLTInputMemoryNodes();
+	vector<OutputMemoryNode*> _aLTOutputMemoryNodes = a->GetLTOutputMemoryNodes();
+	vector<InputMemoryNode*> _aSTInputMemoryNodes = a->GetSTInputMemoryNodes();
+	vector<OutputMemoryNode*> _aSTOutputMemoryNodes = a->GetSTOutputMemoryNodes();
 
 	for (int i = 0; i < a->GetInputCount(); i++)
 	{
@@ -562,10 +600,23 @@ Genome* Genome::Merge(Genome* a, Genome* b,int mergeid)
 	}
 	for (int i = 0; i < a->GetSTMemoryCount(); i++)
 	{
-		int inpmemid = _aInputMemoryNodes[i]->GetNodeID();
-		int outmemid = _aInputMemoryNodes[i]->GetOutputMemoryNode()->GetNodeID();
-		OutputMemoryNode* outputmem = new OutputMemoryNode(newRAND, inpmemid);
-		InputMemoryNode* inputmem = new InputMemoryNode(outputmem, newRAND, outmemid);
+		int inpmemid = _aSTInputMemoryNodes[i]->GetNodeID();
+		int outmemid = _aSTInputMemoryNodes[i]->GetOutputMemoryNode()->GetNodeID();
+		OutputMemoryNode* outputmem = new OutputMemoryNode(newRAND, outmemid);
+		InputMemoryNode* inputmem = new InputMemoryNode(outputmem, newRAND, inpmemid);
+		inputmemorynodes.push_back(inputmem);
+		outputmemorynodes.push_back(outputmem);
+		allnodes.push_back(inputmem);
+		allnodes.push_back(outputmem);
+		nodedict.insert(make_pair(inpmemid, inputmem));
+		nodedict.insert(make_pair(outmemid, outputmem));
+	}
+	for (int i = 0; i < a->GetLTMemoryCount(); i++)
+	{
+		int inpmemid = _aLTInputMemoryNodes[i]->GetNodeID();
+		int outmemid = _aLTInputMemoryNodes[i]->GetOutputMemoryNode()->GetNodeID();
+		OutputMemoryNode* outputmem = new OutputMemoryNode(newRAND, outmemid);
+		InputMemoryNode* inputmem = new InputMemoryNode(outputmem, newRAND, inpmemid);
 		inputmemorynodes.push_back(inputmem);
 		outputmemorynodes.push_back(outputmem);
 		allnodes.push_back(inputmem);
@@ -678,10 +729,11 @@ Genome* Genome::GetGenomeWithCommonProperties(Genome* a, Genome* b, int mergeid)
 	vector<Node*> _intermediates;
 	vector<Node*> _allnodes;
 
-	vector<InputMemoryNode*> _inputmemorynodes;
-	vector<OutputMemoryNode*> _outputmemorynodes;
+	vector<InputMemoryNode*> _stinputmemorynodes;
+	vector<OutputMemoryNode*> _stoutputmemorynodes;
 
-	
+	vector<InputMemoryNode*> _ltinputmemorynodes;
+	vector<OutputMemoryNode*> _ltoutputmemorynodes;
 
 	map<int, Node*> nodedict;
 

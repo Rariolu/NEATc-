@@ -34,3 +34,19 @@ OutputMemoryNode* InputMemoryNode::GetOutputMemoryNode()
 {
 	return outputMemoryNode;
 }
+
+void InputMemoryNode::CreateClone()
+{
+	if (!_clone)
+	{
+		GetOutputMemoryNode()->CreateClone();
+		OutputMemoryNode* omnclone = (OutputMemoryNode*)GetOutputMemoryNode()->GetClone();
+		_clone = new InputMemoryNode(omnclone, rand, GetNodeID());
+		
+	}
+}
+
+InputMemoryNode* InputMemoryNode::GetIMNClone()
+{
+	return (InputMemoryNode*)_clone;
+}

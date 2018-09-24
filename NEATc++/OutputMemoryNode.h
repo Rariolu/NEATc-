@@ -11,6 +11,8 @@ class OutputMemoryNode : public Node
 		~OutputMemoryNode();
 		double GetNodeValue(vector<double> inputs);
 		double GetPreviousIterationOutput();
+		void CreateClone();
+		OutputMemoryNode* GetOMNClone();
 	private:
 		double previousIterationOutput = 0;
 };

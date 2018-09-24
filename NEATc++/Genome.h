@@ -29,13 +29,17 @@ class Genome
 		int GetLTMemoryCount();
 		int GetSTMemoryCount();
 
-		void SetNodes(vector<Node*> allnodes, vector<InputNode*> inputnodes, vector<OutputNode*> outputnodes, vector<Node*> intermediatenodes, vector<InputMemoryNode*> inputmemorynodes, vector<OutputMemoryNode*> outputmemorynodes, MemoryPresentNode* memorypresentnode);
+		void SetNodes(vector<Node*> allnodes, vector<InputNode*> inputnodes, vector<OutputNode*> outputnodes, vector<Node*> intermediatenodes, vector<InputMemoryNode*> ltinputmemorynodes, vector<OutputMemoryNode*> ltoutputmemorynodes, vector<InputMemoryNode*> stinputmemorynodes, vector<OutputMemoryNode*> stoutputmemorynodes, MemoryPresentNode* memorypresentnode);
+		void SetLinks(vector<Node::Link*>* _links);
 		vector<InputNode*> GetInputNodes();
 		vector<Node*> GetIntermediateNodes();
 		vector<OutputNode*> GetOutputNodes();
 
-		vector<InputMemoryNode*> GetInputMemoryNodes();
-		vector<OutputMemoryNode*> GetOutputMemoryNodes();
+		vector<InputMemoryNode*> GetLTInputMemoryNodes();
+		vector<OutputMemoryNode*> GetLTOutputMemoryNodes();
+
+		vector<InputMemoryNode*> GetSTInputMemoryNodes();
+		vector<OutputMemoryNode*> GetSTOutputMemoryNodes();
 
 		MemoryPresentNode* GetMemoryPresentNode();
 
@@ -54,8 +58,8 @@ class Genome
 		vector<OutputNode*> _outputnodes;
 		vector<Node*> _intermediatenodes;
 
-		vector<OutputMemoryNode*> _outputmemorynodes;
-		vector<InputMemoryNode*> _inputmemorynodes;
+		vector<OutputMemoryNode*> _ltoutputmemorynodes;
+		vector<InputMemoryNode*> _ltinputmemorynodes;
 		MemoryPresentNode* _memorypresentnode;
 
 		vector<OutputMemoryNode*> _stoutputmemorynodes;

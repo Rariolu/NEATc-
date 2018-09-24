@@ -40,3 +40,8 @@ void InputNode::CreateClone()
 		_clone = new InputNode(inputIndex, rand, GetNodeID());
 	}
 }
+
+InputNode* InputNode::GetINClone()
+{
+	return (InputNode*)_clone;
+}

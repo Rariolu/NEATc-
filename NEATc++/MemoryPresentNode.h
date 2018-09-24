@@ -10,6 +10,8 @@ class MemoryPresentNode : public Node
 		~MemoryPresentNode();
 		bool STMNodesPresent();
 		double GetNodeValue(vector<double> inputs);
+		void CreateClone();
+		MemoryPresentNode* GetMPClone();
 	private:
 		bool firstiteration = true;
 		bool stmnodespresent = true;
