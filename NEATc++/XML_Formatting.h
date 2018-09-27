@@ -30,6 +30,13 @@ class XML_Formatting
 		static const string intermediatesclosetag;
 		static const string outputsopentag;
 		static const string outputsclosetag;
+
+		static const string shortmemorymapopentag;
+		static const string shortmemorymapclosetag;
+
+		static const string longmemorymapopentag;
+		static const string longmemorymapclosetag;
+
 		static const string linksopentag;
 		static const string linksclosetag;
 		static bool IsTag(string text,stack<string>* elementsstack);
@@ -113,6 +120,40 @@ class XML_Formatting
 				int _source;
 				int _destination;
 				double _weight;
+		};
+		class MemoryMapping
+		{
+		public:
+			MemoryMapping(int inputmemoryid, int outputmemoryid) : MemoryMapping(inputmemoryid,outputmemoryid,0)
+			{
+
+			}
+			MemoryMapping(int inputmemoryid, int outputmemoryid, double value)
+			{
+				_inputmemoryid = inputmemoryid;
+				_outputmemoryid = outputmemoryid;
+				_value = value;
+			}
+			~MemoryMapping()
+			{
+
+			}
+			int GetInputMemoryID()
+			{
+				return _inputmemoryid;
+			}
+			int GetOutputMemoryID()
+			{
+				return _outputmemoryid;
+			}
+			double GetValue()
+			{
+				return _value;
+			}
+		private:
+			int _inputmemoryid;
+			int _outputmemoryid;
+			double _value;
 		};
 };
 

@@ -48,7 +48,7 @@ class Genome
 		Genome* Clone(int genomeid);
 		int ID();
 		static Genome* Merge(Genome* a, Genome* b, int mergeid);
-		static Genome* GetGenomeWithCommonProperties(Genome* a, Genome* b, int mergeid);
+		//static Genome* GetGenomeWithCommonProperties(Genome* a, Genome* b, int mergeid);
 		void Train(vector<double> inputs, vector<double> outputs);
 		map<int, Node*> GetNodeMap();
 	private:

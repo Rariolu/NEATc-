@@ -193,47 +193,47 @@ namespace Sudokise2
         void OneTrainingIteration(int i, BackgroundWorker bw)
         {
             Genome clone = maxgenome;
-            bool merged = false;
+            //bool merged = false;
             bool commoned = false;
             if (rand.Next(3) > 0 && otherparents.Count > 0)
             {
-                Genome p = otherparents.Pop();
-                if (rand.Next(2) == 0 || otherparents.Count < 1)
-                {
-                    if (rand.Next(2) == 0 && otherparents.Count > 0)
-                    {
-                        Genome p2 = otherparents.Pop();
+                //Genome p = otherparents.Pop();
+                //if (rand.Next(2) == 0 || otherparents.Count < 1)
+                //{
+                //    //if (rand.Next(2) == 0 && otherparents.Count > 0)
+                //    //{
+                //    //    Genome p2 = otherparents.Pop();
 
-                        if (Genome.Merge(p, p2, out clone))
-                        {
-                            merged = true;
-                        }
+                //    //    if (Genome.Merge(p, p2, out clone))
+                //    //    {
+                //    //        merged = true;
+                //    //    }
 
-                    }
-                    else
-                    {
-                        if (Genome.Merge(maxgenome, p, out clone))
-                        {
-                            merged = true;
-                        }
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("Commoning attempt. {0}:{1} {2}:{3}", prevcommon.ID, Interface.GenomeExists(prevcommon.ID), p.ID, Interface.GenomeExists(p.ID));
-                    if (Genome.GetCommon(prevcommon, p, out clone))
-                    {
-                        prevcommon = clone;
-                        commoned = true;
-                        merged = true;
-                    }
-                    else
-                    {
-                        Console.WriteLine("Commoning failed. {0}:{1} {2}:{3}",prevcommon.ID,Interface.GenomeExists(prevcommon.ID),p.ID, Interface.GenomeExists(p.ID));
-                    }
-                }
+                //    //}
+                //    //else
+                //    //{
+                //    //    if (Genome.Merge(maxgenome, p, out clone))
+                //    //    {
+                //    //        merged = true;
+                //    //    }
+                //    //}
+                //}
+                //else
+                //{
+                //    Console.WriteLine("Commoning attempt. {0}:{1} {2}:{3}", prevcommon.ID, Interface.GenomeExists(prevcommon.ID), p.ID, Interface.GenomeExists(p.ID));
+                //    if (Genome.GetCommon(prevcommon, p, out clone))
+                //    {
+                //        prevcommon = clone;
+                //        commoned = true;
+                //        merged = true;
+                //    }
+                //    else
+                //    {
+                //        Console.WriteLine("Commoning failed. {0}:{1} {2}:{3}",prevcommon.ID,Interface.GenomeExists(prevcommon.ID),p.ID, Interface.GenomeExists(p.ID));
+                //    }
+                //}
             }
-            if (!merged)
+            //if (!merged)
             {
                 clone = maxgenome.Clone();
                 int m = mutation * (i / 500 + 1) % 20;
@@ -258,10 +258,10 @@ namespace Sudokise2
                 string update = String.Format("{0}| Name: {1}; Score: {2};", i, maxgenome.Name, maxscore);
                 EmailAttempt("Sudokise Update: " + maxscore, update);
             }
-            else if (newscore == maxscore && !merged)
-            {
-                otherparents.Push(clone);
-            }
+            //else if (newscore == maxscore && !merged)
+            //{
+            //    otherparents.Push(clone);
+            //}
             else
             {
                 DisposeGenome(clone);

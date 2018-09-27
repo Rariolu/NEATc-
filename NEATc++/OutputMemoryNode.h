@@ -10,7 +10,8 @@ class OutputMemoryNode : public Node
 		OutputMemoryNode(CSRand* _rand, int nodeid);
 		~OutputMemoryNode();
 		double GetNodeValue(vector<double> inputs);
-		double GetPreviousIterationOutput();
+		double GetPreviousIterationOutput(); 
+		void SetValue(double val);
 		void CreateClone();
 		OutputMemoryNode* GetOMNClone();
 	private:

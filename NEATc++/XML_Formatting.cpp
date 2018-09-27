@@ -12,6 +12,12 @@ const string XML_Formatting::intermediatesclosetag = "</intermediates>";
 const string XML_Formatting::outputsclosetag = "</outputs>";
 const string XML_Formatting::linksclosetag = "</links>";
 
+const string XML_Formatting::shortmemorymapopentag = "<stmemory>";
+const string XML_Formatting::shortmemorymapclosetag = "</stmemory>";
+
+const string XML_Formatting::longmemorymapopentag = "<ltmemory>";
+const string XML_Formatting::longmemorymapclosetag = "</ltmemory>";
+
 vector<string> XML_Formatting::opentags;
 vector<string> XML_Formatting::closetags;
 
@@ -227,6 +233,9 @@ Genome* XML_Formatting::ParseGenomeDirect(string content)
 	vector<ProtoNode> protooutputs;
 	vector<ProtoLink> links;
 
+	vector<MemoryMapping> stmemorymappings;
+	vector<MemoryMapping> ltmemorymappings;
+
 	map<int, int> memorymappings;
 
 	while (getline(stream, line))
@@ -355,6 +364,50 @@ Genome* XML_Formatting::ParseGenomeDirect(string content)
 						}
 					}
 				}
+				else if (elements->top() == shortmemorymapopentag)
+				{
+					if (Operations::Contains(line, "<memory input"))
+					{
+						string inp = Operations::GetTextBetween(line, "input=\"", "\" output");
+						IntWrapper* _inp = new IntWrapper();
+						if (Operations::TryParse(inp, _inp))
+						{
+							string out = Operations::GetTextBetween(line, "output=\"", "\"/>");
+							IntWrapper* _out = new IntWrapper();
+							if (Operations::TryParse(out, _out))
+							{
+								stmemorymappings.push_back(*(new MemoryMapping(_inp->Number, _out->Number)));
+							}
+							_out->~IntWrapper();
+						}
+						_inp->~IntWrapper();
+					}
+				}
+				else if (elements->top() == longmemorymapopentag)
+				{
+					if (Operations::Contains(line, "<memory input"))
+					{
+						string inp = Operations::GetTextBetween(line, "input=\"", "\" output");
+						IntWrapper* _inp = new IntWrapper();
+						if (Operations::TryParse(inp, _inp))
+						{
+							string out = Operations::GetTextBetween(line, "output=\"", "\" value");
+							IntWrapper* _out = new IntWrapper();
+							if (Operations::TryParse(out, _out))
+							{
+								string val = Operations::GetTextBetween(line, "value=\"", "\"/>");
+								DoubleWrapper* _val = new DoubleWrapper();
+								if (Operations::DoubleTryParse(val, _val))
+								{
+									ltmemorymappings.push_back(*(new MemoryMapping(_inp->Number, _out->Number, _val->Number)));
+								}
+								_val->~DoubleWrapper();
+							}
+							_out->~IntWrapper();
+						}
+						_inp->~IntWrapper();
+					}
+				}
 				else if (elements->top() == linksopentag)
 				{
 					if (Operations::Contains(line, "<link source"))
@@ -392,8 +445,11 @@ Genome* XML_Formatting::ParseGenomeDirect(string content)
 			vector<Node*> allnodes;
 			vector<Node*> intermediates;
 
-			vector<InputMemoryNode*> inputmemorynodes;
-			vector<OutputMemoryNode*> outputmemorynodes;
+			vector<InputMemoryNode*> ltinputmemorynodes;
+			vector<OutputMemoryNode*> ltoutputmemorynodes;
+
+			vector<InputMemoryNode*> stinputmemorynodes;
+			vector<OutputMemoryNode*> stoutputmemorynodes;
 
 			MemoryPresentNode* memorypresentnode = new MemoryPresentNode(memorypresentnodeid,stmemorycount > 0 && ltmemorycount > 0);
 
@@ -427,6 +483,35 @@ Genome* XML_Formatting::ParseGenomeDirect(string content)
 				nodedict.insert(make_pair(poutp.ID(), output));
 				Node::CheckNodeNum(poutp.ID());
 			}
+			for (int i = 0; i < stmemorycount; i++)
+			{
+				MemoryMapping mm = stmemorymappings[i];
+				OutputMemoryNode* omn = new OutputMemoryNode(rand, mm.GetOutputMemoryID());
+				InputMemoryNode* imn = new InputMemoryNode(omn, rand, mm.GetInputMemoryID());
+				stoutputmemorynodes.push_back(omn);
+				stinputmemorynodes.push_back(imn);
+				allnodes.push_back(omn);
+				allnodes.push_back(imn);
+				nodedict.insert(make_pair(mm.GetOutputMemoryID(), omn));
+				nodedict.insert(make_pair(mm.GetInputMemoryID(), imn));
+				Node::CheckNodeNum(mm.GetInputMemoryID());
+				Node::CheckNodeNum(mm.GetOutputMemoryID());
+			}
+			for (int i = 0; i < ltmemorycount; i++)
+			{
+				MemoryMapping mm = ltmemorymappings[i];
+				OutputMemoryNode* omn = new OutputMemoryNode(rand, mm.GetOutputMemoryID());
+				omn->SetValue(mm.GetValue());
+				InputMemoryNode* imn = new InputMemoryNode(omn, rand, mm.GetInputMemoryID());
+				ltoutputmemorynodes.push_back(omn);
+				ltinputmemorynodes.push_back(imn);
+				allnodes.push_back(omn);
+				allnodes.push_back(imn);
+				nodedict.insert(make_pair(mm.GetOutputMemoryID(),omn));
+				nodedict.insert(make_pair(mm.GetInputMemoryID(), imn));
+				Node::CheckNodeNum(mm.GetInputMemoryID());
+				Node::CheckNodeNum(mm.GetOutputMemoryID());
+			}
 			for (int i = 0; i < links.size(); i++)
 			{
 				ProtoLink protolink = links[i];
@@ -456,7 +541,7 @@ Genome* XML_Formatting::ParseGenomeDirect(string content)
 				}
 			}
 			genome = new Genome(inputcount, outputcount,stmemorycount,ltmemorycount, id);
-			genome->SetNodes(allnodes, inputs, outputs, intermediates, inputmemorynodes, outputmemorynodes,memorypresentnode);
+ 			genome->SetNodes(allnodes, inputs, outputs, intermediates, ltinputmemorynodes, ltoutputmemorynodes, stinputmemorynodes, stoutputmemorynodes,  memorypresentnode);
 			genome->SetRand(rand);
 			//GenomeManager::InsertGenome(id, genome);
 		}
@@ -748,6 +833,8 @@ vector<string> XML_Formatting::CloseTags()
 		closetags.push_back(inputsclosetag);
 		closetags.push_back(intermediatesclosetag);
 		closetags.push_back(outputsclosetag);
+		closetags.push_back(shortmemorymapclosetag);
+		closetags.push_back(longmemorymapclosetag);
 		closetags.push_back(linksclosetag);
 	}
 	return closetags;

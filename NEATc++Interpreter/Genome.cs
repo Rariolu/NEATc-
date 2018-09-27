@@ -214,68 +214,68 @@ namespace NEATc__Interpreter
                 }
             }
         }
-        public static bool Merge(Genome a, Genome b, out Genome merged)
-        {
-            merged = null;
-            if (a.InputCount != b.InputCount || a.OutputCount != b.OutputCount)
-            {
-                return false;
-                //throw new Exception(String.Format("A's input is {0} and B's input is {1}. A's output is {2} and B's output is {3}. Inputs and outputs of both genomes need to match.", a.InputCount, b.InputCount, a.OutputCount, b.OutputCount));
-            }
-            int aID = a.ID;
-            int bID = b.ID;
-            Console.WriteLine("A: {0}; B: {1}", aID, bID);
-            int newID = Interface.Merge(aID, bID);
-            if (newID == -1)
-            {
-                return false;
-            }
-            merged = new Genome(a.InputCount, a.OutputCount,a.MemoryCount, newID, false);
-            int namelength = Math.Max(a.Name.Length, b.Name.Length);
-            string newname = "";
-            for (int i = 0; i < namelength; i++)
-            {
-                if (i % 2 == 0)
-                {
-                    newname += a.Name[i % a.Name.Length];
-                }
-                else
-                {
-                    newname += b.Name[i % b.Name.Length];
-                }
-            }
+        //public static bool Merge(Genome a, Genome b, out Genome merged)
+        //{
+        //    merged = null;
+        //    if (a.InputCount != b.InputCount || a.OutputCount != b.OutputCount)
+        //    {
+        //        return false;
+        //        //throw new Exception(String.Format("A's input is {0} and B's input is {1}. A's output is {2} and B's output is {3}. Inputs and outputs of both genomes need to match.", a.InputCount, b.InputCount, a.OutputCount, b.OutputCount));
+        //    }
+        //    int aID = a.ID;
+        //    int bID = b.ID;
+        //    Console.WriteLine("A: {0}; B: {1}", aID, bID);
+        //    int newID = Interface.Merge(aID, bID);
+        //    if (newID == -1)
+        //    {
+        //        return false;
+        //    }
+        //    merged = new Genome(a.InputCount, a.OutputCount,a.MemoryCount, newID, false);
+        //    int namelength = Math.Max(a.Name.Length, b.Name.Length);
+        //    string newname = "";
+        //    for (int i = 0; i < namelength; i++)
+        //    {
+        //        if (i % 2 == 0)
+        //        {
+        //            newname += a.Name[i % a.Name.Length];
+        //        }
+        //        else
+        //        {
+        //            newname += b.Name[i % b.Name.Length];
+        //        }
+        //    }
 
-            merged.Name = newname;
-            return true;
-        }
-        public static bool GetCommon(Genome a, Genome b, out Genome common)
-        {
-            common = null;
-            if (a.InputCount != b.InputCount || a.OutputCount != b.OutputCount)
-            {
-                Console.WriteLine("Inputs and outputs don't match.");
-                return false;
-            }
-            int aID = a.ID;
-            int bID = b.ID;
-            int newID = Interface.GetCommon(aID, bID);
-            if (newID == -1)
-            {
-                Console.WriteLine("-1 returned.");
-                return false;
-            }
-            common = new Genome(a.InputCount, a.OutputCount,a.MemoryCount, newID, false);
-            int namelength = Math.Min(a.Name.Length, b.Name.Length);
-            string newname = "";
-            for (int i = 0; i < namelength; i++)
-            {
-                if (a.Name[i] == b.Name[i])
-                {
-                    newname += a.Name[i];
-                }
-            }
-            common.Name = newname;
-            return true;
-        }
+        //    merged.Name = newname;
+        //    return true;
+        //}
+        //public static bool GetCommon(Genome a, Genome b, out Genome common)
+        //{
+        //    common = null;
+        //    if (a.InputCount != b.InputCount || a.OutputCount != b.OutputCount)
+        //    {
+        //        Console.WriteLine("Inputs and outputs don't match.");
+        //        return false;
+        //    }
+        //    int aID = a.ID;
+        //    int bID = b.ID;
+        //    int newID = Interface.GetCommon(aID, bID);
+        //    if (newID == -1)
+        //    {
+        //        Console.WriteLine("-1 returned.");
+        //        return false;
+        //    }
+        //    common = new Genome(a.InputCount, a.OutputCount,a.MemoryCount, newID, false);
+        //    int namelength = Math.Min(a.Name.Length, b.Name.Length);
+        //    string newname = "";
+        //    for (int i = 0; i < namelength; i++)
+        //    {
+        //        if (a.Name[i] == b.Name[i])
+        //        {
+        //            newname += a.Name[i];
+        //        }
+        //    }
+        //    common.Name = newname;
+        //    return true;
+        //}
     }
 }

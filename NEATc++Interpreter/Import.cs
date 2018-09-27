@@ -51,10 +51,10 @@ namespace NEATc__Interpreter
         internal static extern void SaveGenome(int id,string filepath);
         [DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
         internal static extern bool ParseGenome(string filepath);
-        [DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern int Merge(int genomeA, int genomeB);
-        [DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern int GetCommon(int genomeA, int genomeB);
+        //[DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
+        //internal static extern int Merge(int genomeA, int genomeB);
+        //[DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
+        //internal static extern int GetCommon(int genomeA, int genomeB);
 
         [DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void SetConsoleActivation(bool active);
@@ -220,23 +220,23 @@ namespace NEATc__Interpreter
             return false;
         }
 
-        public static int Merge(int genomeA, int genomeB)
-        {
-            if (DLLExistsLocally())
-            {
-                return Import.Merge(genomeA, genomeB);
-            }
-            return -1;
-        }
+        //public static int Merge(int genomeA, int genomeB)
+        //{
+        //    if (DLLExistsLocally())
+        //    {
+        //        return Import.Merge(genomeA, genomeB);
+        //    }
+        //    return -1;
+        //}
 
-        public static int GetCommon(int genomeA, int genomeB)
-        {
-            if (DLLExistsLocally())
-            {
-                return Import.GetCommon(genomeA, genomeB);
-            }
-            return -1;
-        }
+        //public static int GetCommon(int genomeA, int genomeB)
+        //{
+        //    if (DLLExistsLocally())
+        //    {
+        //        return Import.GetCommon(genomeA, genomeB);
+        //    }
+        //    return -1;
+        //}
 
         public static void SetConsoleActivation(bool active)
         {

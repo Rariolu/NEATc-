@@ -32,6 +32,11 @@ double OutputMemoryNode::GetPreviousIterationOutput()
 	return previousIterationOutput;
 }
 
+void OutputMemoryNode::SetValue(double val)
+{
+	previousIterationOutput = val;
+}
+
 void OutputMemoryNode::CreateClone()
 {
 	if (!_clone)

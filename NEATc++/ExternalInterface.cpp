@@ -126,12 +126,12 @@ void SetOutputEventHandler(msgoutput output)
 	ConsoleManager::SetOutputEventHandler(output);
 }
 
-int Merge(int genomeA, int genomeB)
-{
-	return GenomeManager::Merge(genomeA, genomeB);
-}
-
-int GetCommon(int genomeA, int genomeB)
-{
-	return GenomeManager::GetCommon(genomeA, genomeB);
-}
+//int Merge(int genomeA, int genomeB)
+//{
+//	return GenomeManager::Merge(genomeA, genomeB);
+//}
+//
+//int GetCommon(int genomeA, int genomeB)
+//{
+//	return GenomeManager::GetCommon(genomeA, genomeB);
+//}

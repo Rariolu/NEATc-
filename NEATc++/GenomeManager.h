@@ -19,10 +19,10 @@ class GenomeManager
 		static void RemoveGenome(int id);
 		static void InsertGenome(int id, Genome* genome);
 		static int Count();
-		static int Merge(int genomeA, int genomeB);
-		static int Merge(int genomeA, int genomeB, int mergeid);
-		static int GetCommon(int genomeA, int genomeB);
-		static int GetCommon(int genomeA, int genomeB, int mergeid);
+		//static int Merge(int genomeA, int genomeB);
+		//static int Merge(int genomeA, int genomeB, int mergeid);
+		//static int GetCommon(int genomeA, int genomeB);
+		//static int GetCommon(int genomeA, int genomeB, int mergeid);
 	private:
 		static int id;
 		static map<int, Genome*> genomes;

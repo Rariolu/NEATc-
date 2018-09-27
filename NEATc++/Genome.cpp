@@ -604,8 +604,8 @@ Genome* Genome::Merge(Genome* a, Genome* b,int mergeid)
 		int outmemid = _aSTInputMemoryNodes[i]->GetOutputMemoryNode()->GetNodeID();
 		OutputMemoryNode* outputmem = new OutputMemoryNode(newRAND, outmemid);
 		InputMemoryNode* inputmem = new InputMemoryNode(outputmem, newRAND, inpmemid);
-		inputmemorynodes.push_back(inputmem);
-		outputmemorynodes.push_back(outputmem);
+		stinputmemorynodes.push_back(inputmem);
+		stoutputmemorynodes.push_back(outputmem);
 		allnodes.push_back(inputmem);
 		allnodes.push_back(outputmem);
 		nodedict.insert(make_pair(inpmemid, inputmem));
@@ -617,8 +617,8 @@ Genome* Genome::Merge(Genome* a, Genome* b,int mergeid)
 		int outmemid = _aLTInputMemoryNodes[i]->GetOutputMemoryNode()->GetNodeID();
 		OutputMemoryNode* outputmem = new OutputMemoryNode(newRAND, outmemid);
 		InputMemoryNode* inputmem = new InputMemoryNode(outputmem, newRAND, inpmemid);
-		inputmemorynodes.push_back(inputmem);
-		outputmemorynodes.push_back(outputmem);
+		ltinputmemorynodes.push_back(inputmem);
+		ltoutputmemorynodes.push_back(outputmem);
 		allnodes.push_back(inputmem);
 		allnodes.push_back(outputmem);
 		nodedict.insert(make_pair(inpmemid, inputmem));
@@ -675,181 +675,181 @@ Genome* Genome::Merge(Genome* a, Genome* b,int mergeid)
 			}
 		}
 	}
-	newgenome->SetNodes(allnodes, inputs, outputs, intermediates,inputmemorynodes,outputmemorynodes,memorypresentnode);
+	newgenome->SetNodes(allnodes, inputs, outputs, intermediates,ltinputmemorynodes,ltoutputmemorynodes,stinputmemorynodes,stoutputmemorynodes, memorypresentnode);
 	newgenome->SetRand(newRAND);
 	return newgenome;
 }
 
-Genome* Genome::GetGenomeWithCommonProperties(Genome* a, Genome* b, int mergeid)
-{
-	if (a->GetInputCount() != b->GetInputCount() || a->GetOutputCount() != b->GetOutputCount() || a->GetSTMemoryCount() != b->GetSTMemoryCount() || a->GetLTMemoryCount() != b->GetLTMemoryCount())
-	{
-		return NULL;
-	}
-	map<int, Node*> aNodes = a->GetNodeMap();
-	map<int, Node*> bNodes = b->GetNodeMap();
-	vector<Node*> commonNodes;
-	CSRand* newRAND = new CSRand(mergeid);
-	vector<int> aDeletionIndexes;
-	for (map<int, Node*>::iterator aNode = aNodes.begin(); aNode != aNodes.end(); aNode++)
-	{
-		map<int, Node*>::iterator biter = bNodes.find(aNode->first);
-		if (biter == bNodes.end())
-		{
-			aDeletionIndexes.push_back(aNode->first);
-		}
-	}
-	if (aDeletionIndexes.size() > 0)
-	{
-		for (vector<int>::iterator index = aDeletionIndexes.begin(); index < aDeletionIndexes.end(); index++)
-		{
-			aNodes.erase(aNodes.find((*index)));
-		}
-	}
-
-	vector<int> bDeletionIndexes;
-	for (map<int, Node*>::iterator bNode = bNodes.begin(); bNode != bNodes.end(); bNode++)
-	{
-		map<int, Node*>::iterator aiter = aNodes.find(bNode->first);
-		if (aiter == aNodes.end())
-		{
-			bDeletionIndexes.push_back(bNode->first);
-		}
-	}
-	if (bDeletionIndexes.size() > 0)
-	{
-		for (vector<int>::iterator index = bDeletionIndexes.begin(); index < bDeletionIndexes.end(); index++)
-		{
-			bNodes.erase(bNodes.find((*index)));
-		}
-	}
-
-	vector<InputNode*> _inputs;
-	vector<OutputNode*> _outputs;
-	vector<Node*> _intermediates;
-	vector<Node*> _allnodes;
-
-	vector<InputMemoryNode*> _stinputmemorynodes;
-	vector<OutputMemoryNode*> _stoutputmemorynodes;
-
-	vector<InputMemoryNode*> _ltinputmemorynodes;
-	vector<OutputMemoryNode*> _ltoutputmemorynodes;
-
-	map<int, Node*> nodedict;
-
-	MemoryPresentNode* _memorypresentnode = new MemoryPresentNode(a->GetMemoryPresentNode()->GetNodeID(),a->GetSTMemoryCount() > 0 && a->GetLTMemoryCount() > 0);
-	_allnodes.push_back(_memorypresentnode);
-	nodedict.insert(make_pair(_memorypresentnode->GetNodeID(), _memorypresentnode));
-
-	for (map<int, Node*>::iterator aNode = aNodes.begin(); aNode != aNodes.end(); aNode++)
-	{
-		Node* currentNode = aNode->second;
-		int nodeid = currentNode->GetNodeID();
-		if (currentNode->IsInput())
-		{
-			InputNode* inp = new InputNode(nodeid, newRAND, nodeid);
-			_inputs.push_back(inp);
-			_allnodes.push_back(inp);
-			nodedict.insert(make_pair(nodeid, inp));
-		}
-		else if (currentNode->IsOutput())
-		{
-			OutputNode* out = new OutputNode(newRAND, nodeid);
-			_outputs.push_back(out);
-			_allnodes.push_back(out);
-			nodedict.insert(make_pair(nodeid, out));
-		}
-		else if (currentNode->IsInputMemoryNode())
-		{
-			InputMemoryNode* currentAsIMN = (InputMemoryNode*)currentNode;
-			OutputMemoryNode* currentOutputMN = currentAsIMN->GetOutputMemoryNode();
-
-			int inpID = nodeid;
-			int outID = currentOutputMN->GetNodeID();
-
-			OutputMemoryNode* out = new OutputMemoryNode(newRAND, outID);
-			InputMemoryNode* inp = new InputMemoryNode(out, newRAND, inpID);
-
-			_inputmemorynodes.push_back(inp);
-			_outputmemorynodes.push_back(out);
-
-			_allnodes.push_back(inp);
-			_allnodes.push_back(out);
-
-			nodedict.insert(make_pair(inpID, inp));
-			nodedict.insert(make_pair(outID, out));
-		}
-		else if (currentNode->IsOutputMemoryNode())
-		{
-			//Do nothing for now, just leaving this here in case it's necessary at some point.
-		}
-		else if (currentNode->IsMemoryPresentNode())
-		{
-			_memorypresentnode = new MemoryPresentNode(nodeid,((MemoryPresentNode*)currentNode)->STMNodesPresent());
-			_allnodes.push_back(_memorypresentnode);
-			nodedict.insert(make_pair(nodeid, _memorypresentnode));
-		}
-		else
-		{
-			Node* n = new Node(newRAND, nodeid);
-			n->SetDistance(currentNode->GetDistance());
-			_intermediates.push_back(n);
-			_allnodes.push_back(n);
-			nodedict.insert(make_pair(nodeid, n));
-		}
-	}
-	for (map<int, Node*>::iterator node = nodedict.begin(); node != nodedict.end(); node++)
-	{
-		Node* n = node->second;
-		int nodeid = node->first;
-		Node* aNode = aNodes.find(nodeid)->second;
-		Node* bNode = bNodes.find(nodeid)->second;
-		if (!n->IsInput())
-		{
-			vector<Node::Link*> aInputs = aNode->GetInputs();
-
-			vector<Node::Link*> bInputs = bNode->GetInputs();
-			if (aInputs.size() > 0 && bInputs.size() > 0)
-			{
-				for (vector<Node::Link*>::iterator aInput = aInputs.begin(); aInput < aInputs.end(); aInput++)
-				{
-					Node* Asource = (*aInput)->GetSource();
-					if (Asource != NULL)
-					{
-						int sourceid = Asource->GetNodeID();
-						map<int, Node*>::iterator nodedictsource = nodedict.find(sourceid);
-						if (nodedictsource != nodedict.end())
-						{
-							for (vector<Node::Link*>::iterator bInput = bInputs.begin(); bInput < bInputs.end(); bInput++)
-							{
-								Node* Bsource = (*bInput)->GetSource();
-								if (Bsource != NULL)
-								{
-									if (Bsource->GetNodeID() == sourceid)
-									{
-										double aWeight = (*aInput)->GetWeight();
-										double bWeight = (*bInput)->GetWeight();
-										double newWeight = (aWeight + bWeight) / 2;
-										Node* source = nodedictsource->second;
-										Node::Link* link = new Node::Link(source, n, newRAND, newWeight);
-										source->AddOutput(link);
-										n->AddInput(link);
-										break;
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-	Genome* genome = new Genome(a->GetInputCount(), b->GetInputCount(), mergeid);
-	genome->SetRand(newRAND);
-	genome->SetNodes(_allnodes, _inputs, _outputs, _intermediates, _inputmemorynodes,_outputmemorynodes,_memorypresentnode);
-	cout << "A nodes: " << a->GetNodes().size()<< "; B nodes: " << b->GetNodes().size() << "; New nodes: "<<genome->GetNodes().size() << endl;
-	return genome;
-}
+//Genome* Genome::GetGenomeWithCommonProperties(Genome* a, Genome* b, int mergeid)
+//{
+//	if (a->GetInputCount() != b->GetInputCount() || a->GetOutputCount() != b->GetOutputCount() || a->GetSTMemoryCount() != b->GetSTMemoryCount() || a->GetLTMemoryCount() != b->GetLTMemoryCount())
+//	{
+//		return NULL;
+//	}
+//	map<int, Node*> aNodes = a->GetNodeMap();
+//	map<int, Node*> bNodes = b->GetNodeMap();
+//	vector<Node*> commonNodes;
+//	CSRand* newRAND = new CSRand(mergeid);
+//	vector<int> aDeletionIndexes;
+//	for (map<int, Node*>::iterator aNode = aNodes.begin(); aNode != aNodes.end(); aNode++)
+//	{
+//		map<int, Node*>::iterator biter = bNodes.find(aNode->first);
+//		if (biter == bNodes.end())
+//		{
+//			aDeletionIndexes.push_back(aNode->first);
+//		}
+//	}
+//	if (aDeletionIndexes.size() > 0)
+//	{
+//		for (vector<int>::iterator index = aDeletionIndexes.begin(); index < aDeletionIndexes.end(); index++)
+//		{
+//			aNodes.erase(aNodes.find((*index)));
+//		}
+//	}
+//
+//	vector<int> bDeletionIndexes;
+//	for (map<int, Node*>::iterator bNode = bNodes.begin(); bNode != bNodes.end(); bNode++)
+//	{
+//		map<int, Node*>::iterator aiter = aNodes.find(bNode->first);
+//		if (aiter == aNodes.end())
+//		{
+//			bDeletionIndexes.push_back(bNode->first);
+//		}
+//	}
+//	if (bDeletionIndexes.size() > 0)
+//	{
+//		for (vector<int>::iterator index = bDeletionIndexes.begin(); index < bDeletionIndexes.end(); index++)
+//		{
+//			bNodes.erase(bNodes.find((*index)));
+//		}
+//	}
+//
+//	vector<InputNode*> _inputs;
+//	vector<OutputNode*> _outputs;
+//	vector<Node*> _intermediates;
+//	vector<Node*> _allnodes;
+//
+//	vector<InputMemoryNode*> _stinputmemorynodes;
+//	vector<OutputMemoryNode*> _stoutputmemorynodes;
+//
+//	vector<InputMemoryNode*> _ltinputmemorynodes;
+//	vector<OutputMemoryNode*> _ltoutputmemorynodes;
+//
+//	map<int, Node*> nodedict;
+//
+//	MemoryPresentNode* _memorypresentnode = new MemoryPresentNode(a->GetMemoryPresentNode()->GetNodeID(),a->GetSTMemoryCount() > 0 && a->GetLTMemoryCount() > 0);
+//	_allnodes.push_back(_memorypresentnode);
+//	nodedict.insert(make_pair(_memorypresentnode->GetNodeID(), _memorypresentnode));
+//
+//	for (map<int, Node*>::iterator aNode = aNodes.begin(); aNode != aNodes.end(); aNode++)
+//	{
+//		Node* currentNode = aNode->second;
+//		int nodeid = currentNode->GetNodeID();
+//		if (currentNode->IsInput())
+//		{
+//			InputNode* inp = new InputNode(nodeid, newRAND, nodeid);
+//			_inputs.push_back(inp);
+//			_allnodes.push_back(inp);
+//			nodedict.insert(make_pair(nodeid, inp));
+//		}
+//		else if (currentNode->IsOutput())
+//		{
+//			OutputNode* out = new OutputNode(newRAND, nodeid);
+//			_outputs.push_back(out);
+//			_allnodes.push_back(out);
+//			nodedict.insert(make_pair(nodeid, out));
+//		}
+//		else if (currentNode->IsInputMemoryNode())
+//		{
+//			InputMemoryNode* currentAsIMN = (InputMemoryNode*)currentNode;
+//			OutputMemoryNode* currentOutputMN = currentAsIMN->GetOutputMemoryNode();
+//
+//			int inpID = nodeid;
+//			int outID = currentOutputMN->GetNodeID();
+//
+//			OutputMemoryNode* out = new OutputMemoryNode(newRAND, outID);
+//			InputMemoryNode* inp = new InputMemoryNode(out, newRAND, inpID);
+//
+//			_inputmemorynodes.push_back(inp);
+//			_outputmemorynodes.push_back(out);
+//
+//			_allnodes.push_back(inp);
+//			_allnodes.push_back(out);
+//
+//			nodedict.insert(make_pair(inpID, inp));
+//			nodedict.insert(make_pair(outID, out));
+//		}
+//		else if (currentNode->IsOutputMemoryNode())
+//		{
+//			//Do nothing for now, just leaving this here in case it's necessary at some point.
+//		}
+//		else if (currentNode->IsMemoryPresentNode())
+//		{
+//			_memorypresentnode = new MemoryPresentNode(nodeid,((MemoryPresentNode*)currentNode)->STMNodesPresent());
+//			_allnodes.push_back(_memorypresentnode);
+//			nodedict.insert(make_pair(nodeid, _memorypresentnode));
+//		}
+//		else
+//		{
+//			Node* n = new Node(newRAND, nodeid);
+//			n->SetDistance(currentNode->GetDistance());
+//			_intermediates.push_back(n);
+//			_allnodes.push_back(n);
+//			nodedict.insert(make_pair(nodeid, n));
+//		}
+//	}
+//	for (map<int, Node*>::iterator node = nodedict.begin(); node != nodedict.end(); node++)
+//	{
+//		Node* n = node->second;
+//		int nodeid = node->first;
+//		Node* aNode = aNodes.find(nodeid)->second;
+//		Node* bNode = bNodes.find(nodeid)->second;
+//		if (!n->IsInput())
+//		{
+//			vector<Node::Link*> aInputs = aNode->GetInputs();
+//
+//			vector<Node::Link*> bInputs = bNode->GetInputs();
+//			if (aInputs.size() > 0 && bInputs.size() > 0)
+//			{
+//				for (vector<Node::Link*>::iterator aInput = aInputs.begin(); aInput < aInputs.end(); aInput++)
+//				{
+//					Node* Asource = (*aInput)->GetSource();
+//					if (Asource != NULL)
+//					{
+//						int sourceid = Asource->GetNodeID();
+//						map<int, Node*>::iterator nodedictsource = nodedict.find(sourceid);
+//						if (nodedictsource != nodedict.end())
+//						{
+//							for (vector<Node::Link*>::iterator bInput = bInputs.begin(); bInput < bInputs.end(); bInput++)
+//							{
+//								Node* Bsource = (*bInput)->GetSource();
+//								if (Bsource != NULL)
+//								{
+//									if (Bsource->GetNodeID() == sourceid)
+//									{
+//										double aWeight = (*aInput)->GetWeight();
+//										double bWeight = (*bInput)->GetWeight();
+//										double newWeight = (aWeight + bWeight) / 2;
+//										Node* source = nodedictsource->second;
+//										Node::Link* link = new Node::Link(source, n, newRAND, newWeight);
+//										source->AddOutput(link);
+//										n->AddInput(link);
+//										break;
+//									}
+//								}
+//							}
+//						}
+//					}
+//				}
+//			}
+//		}
+//	}
+//	Genome* genome = new Genome(a->GetInputCount(), b->GetInputCount(), mergeid);
+//	genome->SetRand(newRAND);
+//	genome->SetNodes(_allnodes, _inputs, _outputs, _intermediates, _inputmemorynodes,_outputmemorynodes,_memorypresentnode);
+//	cout << "A nodes: " << a->GetNodes().size()<< "; B nodes: " << b->GetNodes().size() << "; New nodes: "<<genome->GetNodes().size() << endl;
+//	return genome;
+//}
 
 void Genome::Train(vector<double> inputs, vector<double> outputs)
 {

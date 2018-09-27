@@ -106,48 +106,48 @@ int GenomeManager::Count()
 	return genomes.size();
 }
 
-int GenomeManager::Merge(int genomeA, int genomeB)
-{
-	return Merge(genomeA, genomeB, id++);
-}
+//int GenomeManager::Merge(int genomeA, int genomeB)
+//{
+//	return Merge(genomeA, genomeB, id++);
+//}
+//
+//int GenomeManager::Merge(int genomeA, int genomeB, int mergeid)
+//{
+//	Genome* a = GetGenome(genomeA);
+//	Genome* b = GetGenome(genomeB);
+//	if (a && b)
+//	{
+//		Genome* a_b = Genome::Merge(a, b, mergeid);
+//		if (a_b)
+//		{
+//			InsertGenome(mergeid, a_b);
+//			return mergeid;
+//		}
+//	}
+//	return -1;
+//}
 
-int GenomeManager::Merge(int genomeA, int genomeB, int mergeid)
-{
-	Genome* a = GetGenome(genomeA);
-	Genome* b = GetGenome(genomeB);
-	if (a && b)
-	{
-		Genome* a_b = Genome::Merge(a, b, mergeid);
-		if (a_b)
-		{
-			InsertGenome(mergeid, a_b);
-			return mergeid;
-		}
-	}
-	return -1;
-}
-
-int GenomeManager::GetCommon(int genomeA, int genomeB)
-{
-	return GetCommon(genomeA, genomeB, id++);
-}
-
-int GenomeManager::GetCommon(int genomeA, int genomeB, int mergeid)
-{
-	Genome* a = GetGenome(genomeA);
-	Genome* b = GetGenome(genomeB);
-	cout << genomeA << " : " << genomeB << endl;
-	bool aexists = a;
-	bool bexists = b;
-	cout << "A: " << aexists << "; B: " << bexists << endl;
-	if (a && b)
-	{
-		Genome* a_b = Genome::GetGenomeWithCommonProperties(a, b, mergeid);
-		if (a_b)
-		{
-			InsertGenome(mergeid, a_b);
-			return mergeid;
-		}
-	}
-	return -1;
-}
+//int GenomeManager::GetCommon(int genomeA, int genomeB)
+//{
+//	return GetCommon(genomeA, genomeB, id++);
+//}
+//
+//int GenomeManager::GetCommon(int genomeA, int genomeB, int mergeid)
+//{
+//	Genome* a = GetGenome(genomeA);
+//	Genome* b = GetGenome(genomeB);
+//	cout << genomeA << " : " << genomeB << endl;
+//	bool aexists = a;
+//	bool bexists = b;
+//	cout << "A: " << aexists << "; B: " << bexists << endl;
+//	if (a && b)
+//	{
+//		Genome* a_b = Genome::GetGenomeWithCommonProperties(a, b, mergeid);
+//		if (a_b)
+//		{
+//			InsertGenome(mergeid, a_b);
+//			return mergeid;
+//		}
+//	}
+//	return -1;
+//}
