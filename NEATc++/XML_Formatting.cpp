@@ -27,7 +27,7 @@ string XML_Formatting::ConvertGenomeToXML(Genome* genome)
 
 	string content = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 
-	content += "<genome>\n";
+	content += genomeopentag+"\n";
 
 	content += "\t<ID>" + to_string(id) + "</ID>\n";
 
@@ -47,7 +47,7 @@ string XML_Formatting::ConvertGenomeToXML(Genome* genome)
 
 	content += "\t<MemoryPresentNode>"+to_string(genome->GetMemoryPresentNode()->GetNodeID())+"</MemoryPresentNode>\n";
 
-	content += "\t<inputs>\n";
+	content += "\t"+inputsopentag+"\n";
 
 	vector<InputNode*> inputs = genome->GetInputNodes();
 
@@ -58,9 +58,9 @@ string XML_Formatting::ConvertGenomeToXML(Genome* genome)
 		content += "\t\t<input id=\"" + to_string(id) + "\" inpindex=\"" + to_string(inputindex) + "\"/>\n";
 	}
 
-	content += "\t</inputs>\n";
+	content += "\t"+inputsclosetag+"\n";
 
-	content += "\t<intermediates>\n";
+	content += "\t"+intermediatesopentag+"\n";
 
 	vector<Node*> intermediates = genome->GetIntermediateNodes();
 
@@ -71,9 +71,9 @@ string XML_Formatting::ConvertGenomeToXML(Genome* genome)
 		content += "\t\t<intermediate id=\"" + to_string(id) + "\" distance=\"" + to_string(distance) + "\"/>\n";
 	}
 
-	content += "\t</intermediates>\n";
+	content += "\t"+intermediatesclosetag+"\n";
 
-	content += "\t<outputs>\n";
+	content += "\t"+outputsopentag+"\n";
 
 	vector<OutputNode*> outputs = genome->GetOutputNodes();
 
@@ -83,7 +83,35 @@ string XML_Formatting::ConvertGenomeToXML(Genome* genome)
 		content += "\t\t<output id=\"" + to_string(id) + "\"/>\n";
 	}
 
-	content += "\t</outputs>\n";
+	content += "\t"+outputsclosetag+"\n";
+
+	content += "\t" + shortmemorymapopentag + "\n";
+
+	for (int i = 0; i < genome->GetSTMemoryCount(); i++)
+	{
+		InputMemoryNode* imn = genome->GetSTInputMemoryNodes()[i];
+		OutputMemoryNode* omn = imn->GetOutputMemoryNode();
+		int inpid = imn->GetNodeID();
+		int outid = omn->GetNodeID();
+		content += "\t\t<memory input=\"" + to_string(inpid) + "\" output=\""+to_string(outid)+"\"/>";
+	}
+
+	content += "\t" + shortmemorymapclosetag + "\n";
+
+
+	content += "\t" + longmemorymapopentag + "\n";
+
+	for (int i = 0; i < genome->GetLTMemoryCount(); i++)
+	{
+		InputMemoryNode* imn = genome->GetLTInputMemoryNodes()[i];
+		OutputMemoryNode* omn = imn->GetOutputMemoryNode();
+		int inpid = imn->GetNodeID();
+		int outid = omn->GetNodeID();
+		double val = omn->GetPreviousIterationOutput();
+		content += "\t\t<memory input=\"" + to_string(inpid) + "\" output=\""+to_string(outid)+"\" value=\""+to_string(val)+"\"/>";
+	}
+
+	content += "\t" + longmemorymapclosetag + "\n";
 
 	content += "\t<links>\n";
 
