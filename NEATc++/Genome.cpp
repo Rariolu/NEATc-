@@ -261,6 +261,7 @@ Genome* Genome::Clone(int genomeid)
 	MemoryPresentNode* mpclone = _memorypresentnode->GetMPClone();
 
 	Genome* _clone = new Genome(GetInputCount(), GetOutputCount(), GetSTMemoryCount(), GetLTMemoryCount(), genomeid);
+	_clone->SetRand(rand);
 	_clone->SetNodes(clonenodes, cloneinputnodes, cloneoutputnodes, cloneintermediates, cloneLTinputmemorynodes, cloneLToutputmemorynodes, cloneSTinputmemorynodes, cloneSToutputmemorynodes, mpclone);
 	_clone->SetLinks(linkclones);
 	return _clone;
