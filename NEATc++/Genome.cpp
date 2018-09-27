@@ -222,6 +222,35 @@ Genome* Genome::Clone(int genomeid)
 		cloneinputnodes.push_back(_inputnodes[i]->GetINClone());
 	}
 	
+	vector<OutputNode*> cloneoutputnodes;
+	for (int i = 0; i < GetOutputCount(); i++)
+	{
+		cloneoutputnodes.push_back(_outputnodes[i]->GetONClone());
+	}
+
+	vector<InputMemoryNode*> cloneLTinputmemorynodes;
+	for (int i = 0; i < GetLTMemoryCount(); i++)
+	{
+		cloneLTinputmemorynodes.push_back(_ltinputmemorynodes[i]->GetIMNClone());
+	}
+
+	vector<OutputMemoryNode*> cloneLToutputmemorynodes;
+	for (int i = 0; i < GetLTMemoryCount(); i++)
+	{
+		cloneLToutputmemorynodes.push_back(_ltoutputmemorynodes[i]->GetOMNClone(true));
+	}
+
+	vector<InputMemoryNode*> cloneSTinputmemorynodes;
+	for (int i = 0; i < GetSTMemoryCount(); i++)
+	{
+		cloneSTinputmemorynodes.push_back(_stinputmemorynodes[i]->GetIMNClone());
+	}
+
+	vector<OutputMemoryNode*> cloneSToutputmemorynodes;
+	for (int i = 0; i < GetSTMemoryCount(); i++)
+	{
+		cloneSToutputmemorynodes.push_back(_stoutputmemorynodes[i]->GetOMNClone());
+	}
 
 	vector<Node::Link*>* linkclones = new vector<Node::Link*>();
 	for (int i = 0; i < links->size(); i++)
@@ -229,10 +258,11 @@ Genome* Genome::Clone(int genomeid)
 		linkclones->push_back(links->at(i)->GetClone());
 	}
 
-	Genome* _clone = new Genome(GetInputCount(), GetOutputCount(), GetSTMemoryCount(), GetLTMemoryCount(), genomeid);
-	
-	_clone->SetLinks(linkclones);
+	MemoryPresentNode* mpclone = _memorypresentnode->GetMPClone();
 
+	Genome* _clone = new Genome(GetInputCount(), GetOutputCount(), GetSTMemoryCount(), GetLTMemoryCount(), genomeid);
+	_clone->SetNodes(clonenodes, cloneinputnodes, cloneoutputnodes, cloneintermediates, cloneLTinputmemorynodes, cloneLToutputmemorynodes, cloneSTinputmemorynodes, cloneSToutputmemorynodes, mpclone);
+	_clone->SetLinks(linkclones);
 	return _clone;
 }
 

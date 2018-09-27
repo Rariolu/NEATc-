@@ -47,5 +47,15 @@ void OutputMemoryNode::CreateClone()
 
 OutputMemoryNode* OutputMemoryNode::GetOMNClone()
 {
-	return (OutputMemoryNode*)_clone;
+	return GetOMNClone(false);
+}
+
+OutputMemoryNode* OutputMemoryNode::GetOMNClone(bool longterm)
+{
+	OutputMemoryNode* omnclone = (OutputMemoryNode*)_clone;
+	if (longterm)
+	{
+		omnclone->SetValue(GetPreviousIterationOutput());
+	}
+	return omnclone;
 }

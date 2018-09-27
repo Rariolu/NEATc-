@@ -13,6 +13,7 @@ class InputMemoryNode : public Node
 		double GetNodeValue(vector<double> inputs);
 		OutputMemoryNode* GetOutputMemoryNode();
 		void CreateClone();
+		void CreateClone(bool longterm);
 		InputMemoryNode* GetIMNClone();
 	private:
 		OutputMemoryNode* outputMemoryNode;

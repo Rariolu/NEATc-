@@ -14,6 +14,7 @@ class OutputMemoryNode : public Node
 		void SetValue(double val);
 		void CreateClone();
 		OutputMemoryNode* GetOMNClone();
+		OutputMemoryNode* GetOMNClone(bool longterm);
 	private:
 		double previousIterationOutput = 0;
 };

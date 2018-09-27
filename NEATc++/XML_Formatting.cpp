@@ -93,7 +93,7 @@ string XML_Formatting::ConvertGenomeToXML(Genome* genome)
 		OutputMemoryNode* omn = imn->GetOutputMemoryNode();
 		int inpid = imn->GetNodeID();
 		int outid = omn->GetNodeID();
-		content += "\t\t<memory input=\"" + to_string(inpid) + "\" output=\""+to_string(outid)+"\"/>";
+		content += "\t\t<memory input=\"" + to_string(inpid) + "\" output=\""+to_string(outid)+"\"/>\n";
 	}
 
 	content += "\t" + shortmemorymapclosetag + "\n";
@@ -108,12 +108,12 @@ string XML_Formatting::ConvertGenomeToXML(Genome* genome)
 		int inpid = imn->GetNodeID();
 		int outid = omn->GetNodeID();
 		double val = omn->GetPreviousIterationOutput();
-		content += "\t\t<memory input=\"" + to_string(inpid) + "\" output=\""+to_string(outid)+"\" value=\""+to_string(val)+"\"/>";
+		content += "\t\t<memory input=\"" + to_string(inpid) + "\" output=\""+to_string(outid)+"\" value=\""+to_string(val)+"\"/>\n";
 	}
 
 	content += "\t" + longmemorymapclosetag + "\n";
 
-	content += "\t<links>\n";
+	content += "\t"+linksopentag+"\n";
 
 	vector<Node*> nodes = genome->GetNodes();
 
@@ -137,9 +137,9 @@ string XML_Formatting::ConvertGenomeToXML(Genome* genome)
 		}
 	}
 
-	content += "\t</links>\n";
+	content += "\t"+linksclosetag+"\n";
 
-	content += "</genome>\n";
+	content += genomeclosetag + "\n";
 
 	return content;
 }

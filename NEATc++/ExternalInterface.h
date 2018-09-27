@@ -38,8 +38,8 @@ extern "C"
 	XI_EXPORT void RemoveGenome(int id);
 	XI_EXPORT void SaveGenome(int id, char* filepath);
 	XI_EXPORT bool ParseGenome(char* filepath);
-	XI_EXPORT int Merge(int genomeA, int genomeB);
-	XI_EXPORT int GetCommon(int genomeA, int genomeB);
+	//XI_EXPORT int Merge(int genomeA, int genomeB);
+	//XI_EXPORT int GetCommon(int genomeA, int genomeB);
 
 	XI_EXPORT void SetConsoleActivation(bool active);
 	XI_EXPORT void SetOutputEventHandler(msgoutput output);

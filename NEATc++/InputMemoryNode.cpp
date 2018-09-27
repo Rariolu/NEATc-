@@ -37,10 +37,15 @@ OutputMemoryNode* InputMemoryNode::GetOutputMemoryNode()
 
 void InputMemoryNode::CreateClone()
 {
+	CreateClone(false);
+}
+
+void InputMemoryNode::CreateClone(bool longterm)
+{
 	if (!_clone)
 	{
 		GetOutputMemoryNode()->CreateClone();
-		OutputMemoryNode* omnclone = (OutputMemoryNode*)GetOutputMemoryNode()->GetClone();
+		OutputMemoryNode* omnclone = GetOutputMemoryNode()->GetOMNClone(longterm);
 		_clone = new InputMemoryNode(omnclone, rand, GetNodeID());
 		
 	}
