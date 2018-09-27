@@ -110,6 +110,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="cmd.txt" />
+    <Text Include="README.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Nodes.cd" />

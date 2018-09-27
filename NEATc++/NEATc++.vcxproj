@@ -182,6 +182,7 @@ xcopy /Y "$(OutDir)*.dll" "F:\fff\Imported VS Projects\Projects\NEATc++\Sudokise
   </ItemGroup>
   <ItemGroup>
     <Text Include="cmd.txt" />
+    <Text Include="README.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Nodes.cd" />
