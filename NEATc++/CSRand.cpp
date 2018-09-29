@@ -13,14 +13,16 @@ CSRand::CSRand(int Seed)
 
 void CSRand::Reseed(int Seed)
 {
-	SeedArray.clear();\
+	//SeedArray.clear();\
+	
 	//cout << "Seeded with value: " << Seed << endl;
+	SeedArray[56] = {};
 	int ii;
 	int mj, mk;
-	for (int i = 0; i < 56; i++)
-	{
-		SeedArray.push_back(0);
-	}
+	//for (int i = 0; i < 56; i++)
+	//{
+	//	SeedArray.push_back(0);
+	//}
 	int subtraction;
 	if (Seed == MSMALL)
 	{
@@ -64,7 +66,7 @@ void CSRand::Reseed(int Seed)
 
 CSRand::~CSRand()
 {
-	SeedArray.clear();
+	//SeedArray.clear();
 }
 
 int CSRand::InternalSample()
@@ -186,7 +188,6 @@ double CSRand::NextDouble()
 
 double CSRand::NextDouble(double minValue, double maxValue)
 {
-	//cout << "NextDouble(min,max) called" << endl;
 	if (maxValue < minValue)
 	{
 		double temp = minValue;
@@ -199,7 +200,6 @@ double CSRand::NextDouble(double minValue, double maxValue)
 
 double CSRand::NextWeight()
 {
-	//cout << "NextWeight() called." << endl;
 	return 2 * NextDouble() - 1;
 }
 

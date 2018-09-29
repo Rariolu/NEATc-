@@ -11,7 +11,9 @@ class GenomeManager
 {
 	public:
 		static int CreateNewGenome(int inputcount, int outputcount, int memorycount);
+		static int CreateNewGenome(int inputcount, int outputcount, int ltmemorycount, int stmemorycount);
 		static int CreateGenomeWithID(int inputcount, int outputcount,int memorycount, int genomeid);
+		static int CreateGenomeWithID(int inputcount, int outputcount, int ltmemorycount, int stmemorycount, int genomeid);
 		static Genome* GetGenome(int id);
 		static int CloneGenome(int genome);
 		static int CloneGenome(int genome, int newgenomeid);

@@ -24,28 +24,28 @@ Node::Node(CSRand* _rand,int id)
 
 Node::~Node()
 {
-	if (_inputs.size() > 0)
-	{
-		for (vector<Link*>::iterator inp = _inputs.begin(); inp < _inputs.end(); inp++)
-		{
-			if ((*inp) != NULL)
-			{
-				(*inp)->~Link();
-			}
-		}
-	}
-	_inputs.clear();
-	if (_outputs.size() > 0)
-	{
-		for (vector<Link*>::iterator out = _outputs.begin(); out < _outputs.end(); out++)
-		{
-			if ((*out) != NULL)
-			{
-				(*out)->~Link();
-			}
-		}
-	}
-	_outputs.clear();
+	//if (_inputs.size() > 0)
+	//{
+	//	for (vector<Link*>::iterator inp = _inputs.begin(); inp < _inputs.end(); inp++)
+	//	{
+	//		if ((*inp) != NULL)
+	//		{
+	//			(*inp)->~Link();
+	//		}
+	//	}
+	//}
+	//_inputs.clear();
+	//if (_outputs.size() > 0)
+	//{
+	//	for (vector<Link*>::iterator out = _outputs.begin(); out < _outputs.end(); out++)
+	//	{
+	//		if ((*out) != NULL)
+	//		{
+	//			(*out)->~Link();
+	//		}
+	//	}
+	//}
+	//_outputs.clear();
 }
 
 void Node::RandomiseDistance(double min, double max)
@@ -129,18 +129,31 @@ double Node::GetNodeValue(vector<double> inputs)
 		return Memorise(inputs.at(inputIndex));
 	}
 	double sum = 0;
-	for (vector<Link*>::iterator i = _inputs.begin(); i < _inputs.end(); i++)
+	for (int i = 0; i < _inputs.size(); i++)
 	{
-		Node* source = (*i)->GetSource();
-		if (source != NULL)
+		Link* link = _inputs[i];
+		Node* source = link->GetSource();
+		if (source)
 		{
-			sum += source->GetNodeValue(inputs) * (*i)->GetWeight();
+			sum += source->GetNodeValue(inputs) * link->GetWeight();
 		}
 		else
 		{
-			RemoveInput((*i));
+			RemoveInput(link);
 		}
 	}
+	//for (vector<Link*>::iterator i = _inputs.begin(); i < _inputs.end(); i++)
+	//{
+	//	Node* source = (*i)->GetSource();
+	//	if (source != NULL)
+	//	{
+	//		sum += source->GetNodeValue(inputs) * (*i)->GetWeight();
+	//	}
+	//	else
+	//	{
+	//		RemoveInput((*i));
+	//	}
+	//}
 	return Memorise(Operations::Sigmoid(sum));
 }
 

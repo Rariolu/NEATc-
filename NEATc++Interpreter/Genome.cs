@@ -30,33 +30,39 @@ namespace NEATc__Interpreter
         public readonly int ID;
         public readonly int InputCount;
         public readonly int OutputCount;
-        public readonly int MemoryCount;
-        private Genome(int inputcount, int outputcount, int memorycount)
+        public readonly int LTMemoryCount;
+        public readonly int STMemoryCount;
+        private Genome(int inputcount, int outputcount, int memorycount) : this(inputcount,outputcount,memorycount,memorycount)
+        {
+           
+        }
+        private Genome(int inputcount, int outputcount, int ltmemorycount, int stmemorycount)
         {
             try
             {
-                ID = Interface.CreateNewGenome(inputcount, outputcount, memorycount);
+                ID = Interface.CreateNewGenome(inputcount, outputcount, ltmemorycount, stmemorycount);
                 if (ID == -1)
                 {
                     throw new Exception("Local DLL not present.");
                 }
             }
-            catch(Exception err)
+            catch (Exception err)
             {
                 throw new Exception("C++ library is being a dick", err);
             }
             InputCount = inputcount;
             OutputCount = outputcount;
-            MemoryCount = memorycount;
+            LTMemoryCount = ltmemorycount;
+            STMemoryCount = stmemorycount;
             Name = Util.GetLetter(ID + GenomeIndex++).ToString();
         }
-        private Genome(int inputcount, int outputcount,int memorycount, int id, bool createnew = true)
+        private Genome(int inputcount, int outputcount,int ltmemorycount,int stmemorycount, int id, bool createnew = true)
         {
             if (createnew)
             {
                 try
                 {
-                    int tempid = Interface.CreateGenomeWithID(inputcount, outputcount,memorycount, id);
+                    int tempid = Interface.CreateGenomeWithID(inputcount, outputcount,ltmemorycount,stmemorycount, id);
                     if (tempid == -1)
                     {
                         throw new Exception("jgrijgoirjgroij");
@@ -70,7 +76,8 @@ namespace NEATc__Interpreter
             ID = id;
             InputCount = inputcount;
             OutputCount = outputcount;
-            MemoryCount = memorycount;
+            LTMemoryCount = ltmemorycount;
+            STMemoryCount = stmemorycount;
             //mutationhistory.ItemAdded += (key, value) =>
             //{
             //    idorder.Add(key);
@@ -128,10 +135,10 @@ namespace NEATc__Interpreter
         {
             try
             {
-                genome = new Genome(inputcount, outputcount,memorycount);
+                genome = new Genome(inputcount, outputcount, memorycount);
                 return true;
             }
-            catch(Exception err)
+            catch (Exception err)
             {
                 Console.WriteLine(err.Message);
                 genome = null;
@@ -184,11 +191,12 @@ namespace NEATc__Interpreter
             int _id;
             int _inputcount;
             int _outputcount;
-            int memorycount;
+            int ltmemorycount;
+            int stmemorycount;
             string n_ame;
-            if (XML_Formatting.CPP_Parse(filepath,out _id, out _inputcount, out _outputcount, out memorycount, out n_ame))
+            if (XML_Formatting.CPP_Parse(filepath,out _id, out _inputcount, out _outputcount, out ltmemorycount, out stmemorycount, out n_ame))
             {
-                genome = new Genome(_inputcount, _outputcount,memorycount, _id,false);
+                genome = new Genome(_inputcount, _outputcount,ltmemorycount,stmemorycount, _id,false);
                 if (!String.IsNullOrEmpty(n_ame))
                 {
                     genome.Name = n_ame;

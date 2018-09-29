@@ -6,8 +6,17 @@ map<int, Genome*> GenomeManager::genomes;
 int GenomeManager::CreateNewGenome(int inputcount, int outputcount, int memorycount)
 {
 	//cout << "CreateNewGenome called" << endl;
+	//int genomeid = id++;
+	//Genome* genome = new Genome(inputcount, outputcount,memorycount,genomeid);
+	//genomes.insert(make_pair(genomeid, genome));
+	//return genomeid;
+	return CreateNewGenome(inputcount, outputcount, memorycount, memorycount);
+}
+
+int GenomeManager::CreateNewGenome(int inputcount, int outputcount, int ltmemorycount, int stmemorycount)
+{
 	int genomeid = id++;
-	Genome* genome = new Genome(inputcount, outputcount,memorycount,genomeid);
+	Genome* genome = new Genome(inputcount, outputcount, ltmemorycount,stmemorycount, genomeid);
 	genomes.insert(make_pair(genomeid, genome));
 	return genomeid;
 }
@@ -30,9 +39,23 @@ int GenomeManager::CloneGenome(int genome)
 
 int GenomeManager::CreateGenomeWithID(int inputcount, int outputcount, int memorycount, int genomeid)
 {
+	return CreateGenomeWithID(inputcount, outputcount, memorycount, memorycount, genomeid);
+	//if (!GetGenome(genomeid))
+	//{
+	//	Genome* genome = new Genome(inputcount, outputcount,memorycount, genomeid);
+	//	genomes.insert(make_pair(genomeid, genome));
+	//	IDCheck(genomeid);
+	//	return genomeid;
+	//}
+	//ConsoleManager::Output("Genome already existed you pathetic worm!");
+	//return -1;
+}
+
+int GenomeManager::CreateGenomeWithID(int inputcount, int outputcount, int ltmemorycount, int stmemorycount, int genomeid)
+{
 	if (!GetGenome(genomeid))
 	{
-		Genome* genome = new Genome(inputcount, outputcount,memorycount, genomeid);
+		Genome* genome = new Genome(inputcount, outputcount, ltmemorycount, stmemorycount, genomeid);
 		genomes.insert(make_pair(genomeid, genome));
 		IDCheck(genomeid);
 		return genomeid;

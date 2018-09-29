@@ -28,12 +28,14 @@ extern "C"
 	XI_EXPORT double RANDOUBLE();
 
 	XI_EXPORT bool GenomeExists(int id);
-	XI_EXPORT int CreateNewGenome(int inputcount, int outputcount, int memorycount);
+	//XI_EXPORT int CreateNewGenome(int inputcount, int outputcount, int memorycount);
+	XI_EXPORT int CreateNewGenome(int inputcount, int outputcount, int ltmemorycount, int stmemorycount);
 	XI_EXPORT double GetOutputFromGenome(int genome, int inputcount, double* inputs, int outputnum);
 	XI_EXPORT void ResetMemory(int genomeid);
 	XI_EXPORT void Mutate(int genomeid, int iterations);
 	XI_EXPORT int CloneGenome(int genome);
-	XI_EXPORT int CreateGenomeWithID(int inputcount, int outputcount, int memorycount, int genomeid);
+	//XI_EXPORT int CreateGenomeWithID(int inputcount, int outputcount, int memorycount, int genomeid);
+	XI_EXPORT int CreateGenomeWithID(int inputcount, int outputcount, int ltmemorycount, int stmemorycount, int genomeid);
 	XI_EXPORT int CloneGenomeWithID(int genome, int newgenomeid);
 	XI_EXPORT void RemoveGenome(int id);
 	XI_EXPORT void SaveGenome(int id, char* filepath);

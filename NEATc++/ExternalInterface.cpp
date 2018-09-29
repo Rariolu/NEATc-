@@ -42,9 +42,15 @@ bool GenomeExists(int id)
 	return GenomeManager::GetGenome(id);
 }
 
-int CreateNewGenome(int inputcount, int outputcount, int memorycount)
+//int CreateNewGenome(int inputcount, int outputcount, int memorycount)
+//{
+//	return CreateNewGenome(inputcount, outputcount, memorycount, memorycount);
+//	//return GenomeManager::CreateNewGenome(inputcount, outputcount,memorycount);
+//}
+
+int CreateNewGenome(int inputcount, int outputcount, int ltmemorycount, int stmemorycount)
 {
-	return GenomeManager::CreateNewGenome(inputcount, outputcount,memorycount);
+	return GenomeManager::CreateNewGenome(inputcount, outputcount, ltmemorycount, stmemorycount);
 }
 
 double GetOutputFromGenome(int genome,int inputcount, double* inputs, int outputnum)
@@ -85,9 +91,14 @@ int CloneGenome(int genome)
 	return GenomeManager::CloneGenome(genome);
 }
 
-int CreateGenomeWithID(int inputcount, int outputcount,int memorycount, int genomeid)
+//int CreateGenomeWithID(int inputcount, int outputcount,int memorycount, int genomeid)
+//{
+//	return GenomeManager::CreateGenomeWithID(inputcount, outputcount, memorycount,genomeid);
+//}
+
+int CreateGenomeWithID(int inputcount, int outputcount, int ltmemorycount, int stmemorycount, int genomeid)
 {
-	return GenomeManager::CreateGenomeWithID(inputcount, outputcount, memorycount,genomeid);
+	return GenomeManager::CreateGenomeWithID(inputcount, outputcount, ltmemorycount, stmemorycount, genomeid);
 }
 
 int CloneGenomeWithID(int genome, int newgenomeid)

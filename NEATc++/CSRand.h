@@ -32,7 +32,7 @@ class CSRand
 		const int MZ = 0;
 		int inext;
 		int inextp;
-		vector<int> SeedArray;
+		int SeedArray [56] = {};
 
 		int InternalSample();
 		double GetSampleForLargeRange();

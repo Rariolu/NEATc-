@@ -37,12 +37,12 @@ namespace Demo
         }
         private void button3_Click(object sender, EventArgs e)
         {
-            int id = Interface.CreateNewGenome(2, 1,0);
+            int id = Interface.CreateNewGenome(2, 1,0,0);
             MSGFormat("Id: {0};", id);
         }
         private void button4_Click(object sender, EventArgs e)
         {
-            int id = Interface.CreateNewGenome(2, 1,0);
+            int id = Interface.CreateNewGenome(2, 1,0,0);
             double num = Interface.GetOutputFromGenome(id, 2, new double[] { 1, 2 }, 0);
             MSGFormat("Num: {0};", num);
         }

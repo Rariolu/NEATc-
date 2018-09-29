@@ -32,7 +32,7 @@ namespace NEATc__Interpreter
         [DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
         internal static extern bool GenomeExists(int id);
         [DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern int CreateNewGenome(int inputcount, int outputcount, int memorycount);
+        internal static extern int CreateNewGenome(int inputcount, int outputcount, int ltmemorycount,int stmemorycount);
         [DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
         internal static extern double GetOutputFromGenome(int genome,int inputcount, double[] inputs, int outputnum);
         [DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
@@ -42,7 +42,7 @@ namespace NEATc__Interpreter
         [DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
         internal static extern int CloneGenome(int genome);
         [DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern int CreateGenomeWithID(int inputcount, int outputcount,int memorycount, int genomeid);
+        internal static extern int CreateGenomeWithID(int inputcount, int outputcount,int ltmemorycount, int stmemorycount, int genomeid);
         [DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
         internal static extern int CloneGenomeWithID(int genome, int newgenomeid);
         [DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
@@ -138,11 +138,11 @@ namespace NEATc__Interpreter
             }
             return false;
         }
-        public static int CreateNewGenome(int inputcount, int outputcount, int memorycount)
+        public static int CreateNewGenome(int inputcount, int outputcount, int ltmemorycount, int stmemorycount)
         {
             if (DLLExistsLocally())
             {
-                return Import.CreateNewGenome(inputcount, outputcount, memorycount);
+                return Import.CreateNewGenome(inputcount, outputcount, ltmemorycount, stmemorycount);
             }
             return -1;
         }
@@ -178,11 +178,11 @@ namespace NEATc__Interpreter
             }
             return -1;
         }
-        public static int CreateGenomeWithID(int inputcount, int outputcount,int memorycount, int genomeid)
+        public static int CreateGenomeWithID(int inputcount, int outputcount,int ltmemorycount, int stmemorycount, int genomeid)
         {
             if (DLLExistsLocally())
             {
-                return Import.CreateGenomeWithID(inputcount, outputcount,memorycount, genomeid);
+                return Import.CreateGenomeWithID(inputcount, outputcount,ltmemorycount,stmemorycount, genomeid);
             }
             return -1;
         }

@@ -158,20 +158,22 @@ namespace NEATc__Interpreter
         //    return false;
         //}
 
-        public static bool CPP_Parse(string filepath, out int id, out int inputcount, out int outputcount,out int memorycount, out string name)
+        public static bool CPP_Parse(string filepath, out int id, out int inputcount, out int outputcount,out int ltmemorycount,out int stmemorycount, out string name)
         {
             id = -1;
             inputcount = -1;
             outputcount = -1;
-            memorycount = 0;
+            ltmemorycount = 0;
+            stmemorycount = 0;
             name = String.Empty;
             bool idset = false;
             bool inpset = false;
             bool outset = false;
-            bool memset = false;
+            bool stcountset = false;
+            bool ltcountset = false;
             Func<bool> done = () =>
             {
-                return idset && inpset && outset;
+                return idset && inpset && outset && stcountset && ltcountset;
             };
             filepath = filepath.EndsWith(".xml") ? filepath : filepath + ".xml";
             XmlReader xmlreader = XmlReader.Create(filepath);
@@ -210,11 +212,17 @@ namespace NEATc__Interpreter
                             outputcount = int.Parse(xmlreader.Value);
                             outset = true;
                         }
-                        if (xmlreader.IsStartElement("MemoryCount"))
+                        if (xmlreader.IsStartElement("LTMemoryCount"))
                         {
                             xmlreader.Read();
-                            memorycount = int.Parse(xmlreader.Value);
-                            memset = true;
+                            ltmemorycount = int.Parse(xmlreader.Value);
+                            ltcountset = true;
+                        }
+                        if (xmlreader.IsStartElement("STMemoryCount"))
+                        {
+                            xmlreader.Read();
+                            stmemorycount = int.Parse(xmlreader.Value);
+                            stcountset = true;
                         }
                     }
                 }
