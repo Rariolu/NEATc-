@@ -201,16 +201,27 @@ void Node::RemoveOutput(int index)
 
 void Node::RemoveFromGenome()
 {
-	for (vector<Link*>::iterator i = _inputs.begin(); i < _inputs.end(); i++)
+	for (int i = 0; i < _inputs.size(); i++)
 	{
-		(*i)->GetSource()->RemoveOutput((*i));
+		_inputs[i]->GetSource()->RemoveOutput(_inputs[i]);
 	}
-	for (vector<Link*>::iterator i = _outputs.begin(); i < _outputs.end(); i++)
+	for (int i = 0; i < _outputs.size(); i++)
 	{
-		(*i)->GetDestination()->RemoveInput((*i));
+		_outputs[i]->GetDestination()->RemoveInput(_inputs[i]);
 	}
-	_clone->RemoveFromGenome();
-	_clone->~Node();
+	//for (vector<Link*>::iterator i = _inputs.begin(); i < _inputs.end(); i++)
+	//{
+	//	(*i)->GetSource()->RemoveOutput((*i));
+	//}
+	//for (vector<Link*>::iterator i = _outputs.begin(); i < _outputs.end(); i++)
+	//{
+	//	(*i)->GetDestination()->RemoveInput((*i));
+	//}
+	if (_clone)
+	{
+		_clone->RemoveFromGenome();
+		_clone->~Node();
+	}
 }
 
 void Node::MutateWeight()
@@ -327,15 +338,23 @@ void Node::RemoveWeakInputs()
 		//}
 		if (inputstoberemoved.size() > 0)
 		{
-			for (vector<int>::iterator i = inputstoberemoved.begin(); i < inputstoberemoved.end(); i++)
+			for (int i = 0; i < inputstoberemoved.size(); i++)
 			{
-				RemoveInput((*i));
+				RemoveInput(inputstoberemoved[i]);
 				if (_clone)
 				{
-					_clone->RemoveInput((*i));
+					_clone->RemoveInput(inputstoberemoved[i]);
 				}
-				//cout << "Input removed mwuhahaha" << endl;
 			}
+			//for (vector<int>::iterator i = inputstoberemoved.begin(); i < inputstoberemoved.end(); i++)
+			//{
+			//	RemoveInput((*i));
+			//	if (_clone)
+			//	{
+			//		_clone->RemoveInput((*i));
+			//	}
+			//	//cout << "Input removed mwuhahaha" << endl;
+			//}
 		}
 	}
 	if (_clone)
@@ -386,10 +405,10 @@ bool Node::HasInput(int nodeid)
 {
 	if (_inputs.size() > 0)
 	{
-		for (vector<Link*>::iterator i = _inputs.begin(); i < _inputs.end(); i++)
+		for (int i = 0; i < _inputs.size(); i++)
 		{
-			Node* source = (*i)->GetSource();
-			if (source != NULL)
+			Node* source = _inputs[i]->GetSource();
+			if (source)
 			{
 				if (source->GetNodeID() == nodeid)
 				{
@@ -397,6 +416,17 @@ bool Node::HasInput(int nodeid)
 				}
 			}
 		}
+		//for (vector<Link*>::iterator i = _inputs.begin(); i < _inputs.end(); i++)
+		//{
+		//	Node* source = (*i)->GetSource();
+		//	if (source != NULL)
+		//	{
+		//		if (source->GetNodeID() == nodeid)
+		//		{
+		//			return true;
+		//		}
+		//	}
+		//}
 	}
 	return false;
 }
