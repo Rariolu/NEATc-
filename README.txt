@@ -1,3 +1,5 @@
+This repo is now deprecated, the project is ongoing at https://github.com/Rariolu/NEAT_C-
+
 NEATC++ is a library that creates neural networks using the "Neuro Evolution of Augmenting Topologies" paradigm.
 
 NEATC++_Interpreter is a library that bridges the gap between the NEATC++ library and the .NET framework.
